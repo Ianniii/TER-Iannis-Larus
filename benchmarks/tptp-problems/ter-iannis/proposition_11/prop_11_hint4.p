@@ -21,5 +21,5 @@ fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & 
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
 fof(proposition_11_int,conjecture,(! [A,B,C] : (? [E] : ((betS(A,C,B)) => ((betS(A,C,E) & cong(C,E,A,C))))))).
 
-fof(hintname, (0 != 2), 1, _).
-fof(hintname0, _, 2, lemma_extension(0,2,0,2)).
+%fof(hintname, (0 != 2), _, _).
+fof(hintname0, _, 3, lemma_extension(0,2,0,2)).
