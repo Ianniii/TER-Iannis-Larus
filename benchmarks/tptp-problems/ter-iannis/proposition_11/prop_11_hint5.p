@@ -19,10 +19,10 @@ fof(deftriangle,axiom, (! [A,B,C] : ((triangle(A,B,C)) => ((~ (col(A,B,C))))))).
 fof(deftriangle2,axiom, (! [A,B,C] : ((~ (col(A,B,C))) => ((triangle(A,B,C)))))).
 fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C ))))))).
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
-fof(proposition_11_int,conjecture,(! [A,B,C] : (? [E,F] : ((betS(A,C,B)) => ((betS(A,C,E) & equilateral(A,E,F)))))).
+fof(proposition_11_int,conjecture,(! [A,B,C] : (? [E,F] : ((betS(A,C,B)) => ((betS(A,C,E) & equilateral(A,E,F)) ))))).
 
 %fof(hintname, (0 != 2), _, _).
-%fof(hintname0, _, _, proposition_01(0,1)).
+%fof(hintname0, hint,_, _, proposition_01(0,1)).
 %fof(hintname0, _, _, proposition_01(?,?)).
-fof(hintname0, (triangle(?,?,?)), _, _).
+fof(hintname0,hint, (triangle(?,?,?)), _, _).
 

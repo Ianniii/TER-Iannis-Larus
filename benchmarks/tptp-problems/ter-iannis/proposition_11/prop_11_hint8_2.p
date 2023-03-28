@@ -1,13 +1,13 @@
-% ./larus -vcoq -m12 -l100 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint6.p
+% ./larus -vcoq -m12 -l100 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint8_2.p
 %%% Without hint
 % No proof found
-% With -i : proof found -> size 9 Time 75s
+% With -i : None
 
 %%% With hints
-% -i : proof found with Coqcorrect -> size 8 Time 67s
-% Without -i : proof found with CoqWrong
+% -i : None
+% Without -i : None
 
-%% Proof correct with hints, but this is not the logic we want from the proof
+%% 
 
 
 fof(lemma_betweennotequal,axiom, (! [A,B,C] : ((betS(A,B,C)) => ((( B != C ) & ( A != B ) & ( A != C )))))).
@@ -29,8 +29,11 @@ fof(deftriangle,axiom, (! [A,B,C] : ((triangle(A,B,C)) => ((~ (col(A,B,C))))))).
 fof(deftriangle2,axiom, (! [A,B,C] : ((~ (col(A,B,C))) => ((triangle(A,B,C)))))).
 fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C ))))))).
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
-fof(proposition_11_int,conjecture,(! [A,B,C] : (? [E,F] : ((betS(A,C,B)) => ((betS(A,C,E) & equilateral(A,E,F) & cong(A,F,E,F)))))).
+fof(proposition_11_int,conjecture,(! [A,B,C] : (? [E,F] : ((betS(A,C,B)) => ((betS(A,C,E) & equilateral(A,E,F) & (C != F) )))))).
 
-fof(hintname, hint,_, _, lemma_extension(0,2,0,2)).
-fof(hintname0, hint,_, _, proposition_01(0,?)).
+fof(hintname0, hint,_, 1, lemma_extension(0,2,0,2)).
+fof(hintname2, hint,_, 2, proposition_01(0,?)).
+fof(hintname3, hint, ((2 = 4) | (2 != 4)), _, _).
+fof(hintname1, hint, _, _, defcollinear2f(0,?,2)).
+
 

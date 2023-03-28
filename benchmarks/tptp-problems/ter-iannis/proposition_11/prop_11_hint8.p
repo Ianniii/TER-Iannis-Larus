@@ -1,13 +1,16 @@
-% ./larus -vcoq -m12 -l100 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint6.p
+% ./larus -vcoq -m12 -l40 -noexcludedmiddle benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint8.p
+% cat proofs/PROOFprop_11_hint8pQF_BVmin.v
+% cat proofs/PROOFprop_11_hint8pQF_BV.v
+
 %%% Without hint
-% No proof found
-% With -i : proof found -> size 9 Time 75s
+% None
+% With -i : Size 11 Time 2s (if -m12 but not with -m11)
 
 %%% With hints
-% -i : proof found with Coqcorrect -> size 8 Time 67s
-% Without -i : proof found with CoqWrong
+% -i : Size 10 Time 2s
+% Without -i : Size 9 Time 4s
 
-%% Proof correct with hints, but this is not the logic we want from the proof
+%% 
 
 
 fof(lemma_betweennotequal,axiom, (! [A,B,C] : ((betS(A,B,C)) => ((( B != C ) & ( A != B ) & ( A != C )))))).
@@ -17,6 +20,7 @@ fof(defequilateral,axiom, (! [A,B,C] : ((equilateral(A,B,C)) => ((cong(A,B,B,C) 
 fof(defequilateral2,axiom, (! [A,B,C] : ((cong(A,B,B,C) & cong(B,C,C,A)) => ((equilateral(A,B,C)))))).
 fof(lemma_doublereverse,axiom, (! [A,B,C,D] : ((cong(A,B,C,D)) => ((cong(D,C,B,A) & cong(B,A,D,C)))))).
 fof(lemma_congruenceflip,axiom, (! [A,B,C,D] : ((cong(A,B,C,D)) => ((cong(B,A,D,C) & cong(B,A,C,D) & cong(A,B,D,C)))))).
+fof(defncollinear,axiom, (! [A,B,C] : ((~ (col(A,B,C))) => ((A != B) & (A != C) & (B != C)) ))).
 fof(defcollinear,axiom, (! [A,B,C] : ((col(A,B,C)) => ((( A = B )) | (( A = C )) | (( B = C )) | (betS(B,A,C)) | (betS(A,B,C)) | (betS(A,C,B)))))).
 fof(defcollinear2a,axiom, (! [A,B,C] : ((( A = B )) => ((col(A,B,C)))))).
 fof(defcollinear2b,axiom, (! [A,B,C] : ((( A = C )) => ((col(A,B,C)))))).
@@ -29,8 +33,7 @@ fof(deftriangle,axiom, (! [A,B,C] : ((triangle(A,B,C)) => ((~ (col(A,B,C))))))).
 fof(deftriangle2,axiom, (! [A,B,C] : ((~ (col(A,B,C))) => ((triangle(A,B,C)))))).
 fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C ))))))).
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
-fof(proposition_11_int,conjecture,(! [A,B,C] : (? [E,F] : ((betS(A,C,B)) => ((betS(A,C,E) & equilateral(A,E,F) & cong(A,F,E,F)))))).
+fof(proposition_11_int,conjecture,(! [A,B,C,E,F] : ((betS(A,C,B) & betS(A,C,E) & equilateral(A,E,F) & triangle(A,E,F) =>  (C != F) )))).
 
-fof(hintname, hint,_, _, lemma_extension(0,2,0,2)).
-fof(hintname0, hint,_, _, proposition_01(0,?)).
-
+%fof(hintname0, hint, _, _, defncollinear(0,?,2)).
+%fof(hintname1, hint, _, _, defcollinear2f(0,?,2)).
