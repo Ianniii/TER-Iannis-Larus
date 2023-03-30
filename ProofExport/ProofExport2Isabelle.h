@@ -24,6 +24,10 @@ private:
     void OutputProofEnd(ofstream& outfile, const EFQ* efq, unsigned);
     void OutputProofEnd(ofstream& outfile, const ByNegIntro* bni, unsigned level);
 
+    string mSimpleaxioms;
+    bool mbHasImplication;
+    bool mbNeedGen;
+    DNFFormula mInstantiatedGoal;
 };
 
 #endif // PROOFEXPORT2Isabelle_H

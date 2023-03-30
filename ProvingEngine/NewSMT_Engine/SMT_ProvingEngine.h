@@ -41,7 +41,7 @@ public:
   SMT_ProvingEngine(Theory *pT, proverParams &params);
   void AddPremise(const Fact &f);
   bool ProveFromPremises(const DNFFormula &formula, CLProof &proof);
-  virtual void SetStartTimeAndLimit(const clock_t &startTime, unsigned timeLimit);
+  virtual void SetTimeLimit(unsigned timeLimit);
   virtual PROVING_ENGINE GetKind() { return mSMT_theory; }
 
 private:
@@ -53,10 +53,11 @@ private:
   bool ReconstructSubproof(const DNFFormula &formula, CLProof& proof,
                            unsigned& start_step, vector<Fact> &proofTrace);
 
-  void DeclareVarBasicType(const Expression& Var);
+  void DeclareVarBasicType(const Expression& Var, unsigned UpperLimit);
   void DeclareVarBoolean(const Expression& Var);
   void Assert(const Expression& c);
   void AddComment(const string& comment);
+
   Expression EncodeHint(const tHint &hint, unsigned index);
 
   Expression CorrectnessConstraint();
@@ -114,7 +115,6 @@ private:
   static Expression False(); // SMT level "false"
   // ----------------------------------------------------------
   const CLFormula& GetAxiom(unsigned k);
-  bool IsSimpleAxiom(unsigned k);
   void ComputeBindingForAxioms();
   void ComputeBinding(const CLFormula &f, unsigned k);
   unsigned BindingAxiomPremises(unsigned ax, unsigned premise, unsigned arg);

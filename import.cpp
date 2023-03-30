@@ -299,7 +299,8 @@ ReturnValue SetUpEngineAndProveConjecture(proverParams &params, Theory &T,
       else if (params.eEngine == eSMTLIA_ProvingEngine ||
                params.eEngine == eSMTBV_ProvingEngine ||
                params.eEngine == eSMTUFLIA_ProvingEngine ||
-               params.eEngine == eSMTUFBV_ProvingEngine)
+               params.eEngine == eSMTUFBV_ProvingEngine ||
+               params.eEngine == eMiniZinc)
         engine = new SMT_ProvingEngine(&T1, params);
 
       else // default
@@ -338,7 +339,8 @@ ReturnValue SetUpEngineAndProveConjecture(proverParams &params, Theory &T,
     else if (params.eEngine == eSMTLIA_ProvingEngine ||
              params.eEngine == eSMTBV_ProvingEngine ||
              params.eEngine == eSMTUFLIA_ProvingEngine  ||
-             params.eEngine == eSMTUFBV_ProvingEngine)
+             params.eEngine == eSMTUFBV_ProvingEngine ||
+             params.eEngine == eMiniZinc)
       engine = new SMT_ProvingEngine(&T, params);
     else // default
       engine = new STL_ProvingEngine(&T, params);
@@ -417,7 +419,7 @@ ReturnValue ProveTheorem(proverParams &params, Theory &T, ProvingEngine &engine,
 
   DNFFormula fout;
   T.InstantiateGoal(theorem, instantiation, fout, false);
-  engine.SetStartTimeAndLimit(clock(), params.time_limit);
+  engine.SetTimeLimit(params.time_limit);
   engine.SetMaxNestingDepth(params.max_nesting_depth);
   engine.SetHints(&hints);
 
@@ -435,9 +437,19 @@ ReturnValue ProveTheorem(proverParams &params, Theory &T, ProvingEngine &engine,
          << "The proof found size (without assumptions): "
          << proof.Size() - proof.NumOfAssumptions() << endl
          << flush;
-    if ((engine.GetKind() == eSTL_ProvingEngine || !params.shortest_proof) &&
-        params.mbSimp) {
-      proof.Simplify();
+    if (params.mbSimp) {
+      if (engine.GetKind() == eSTL_ProvingEngine)
+        proof.SimplifyByFormulae();
+      else if (!params.shortest_proof) {
+        if (engine.GetKind() == eSMTBV_ProvingEngine ||
+            engine.GetKind() == eSMTUFBV_ProvingEngine ||
+            engine.GetKind() == eSMTLIA_ProvingEngine ||
+            engine.GetKind() == eSMTUFLIA_ProvingEngine ||
+            engine.GetKind() == eMiniZinc)
+          proof.SimplifyByProofSteps();
+        else
+          proof.SimplifyByFormulae();
+      }
       cout << endl
            << "Done! (simplified proof length without assumptions: "
            << proof.Size() - proof.NumOfAssumptions() << ")" << endl;
@@ -458,21 +470,30 @@ ReturnValue ProveTheorem(proverParams &params, Theory &T, ProvingEngine &engine,
       string s = "coqc -R proofs src -q  " + sFileName3;
       int rv = system(s.c_str());
       if (!rv)
-        cout << "CoqCorrect!" << endl;
+        cout << "CoqCorrect!";
       else
-        cout << "CoqWrong!" << endl;
+        cout << "CoqWrong!";
+      cout << endl << endl;
     }
     if (params.mbIsa) {
       ProofExport2Isabelle exisa;
       string sFileName3("proofs/PROOF" + fileName + ".thy");
       exisa.ToFile(T, proof, sFileName3, params);
-      cout << "Verifying Isabelle proof ... " << flush;
-      string s = "./isabelle  process -T " + sFileName3;
-      int rv = system(s.c_str());
-      if (!rv)
-        cout << "IsabelleCorrect!" << endl;
-      else
-        cout << "IsabelleWrong!" << endl;
+
+      if (!params.sIsaLarusFolder.empty()) {
+        string sFileName4(params.sIsaLarusFolder + "LarusSession/larus.thy");
+        string sCopyFile = "cp " + sFileName3 + " " + sFileName4;
+        system(sCopyFile.c_str());
+
+        cout << "Verifying Isabelle proof ... " << flush;
+        string s = params.sIsaLarusFolder  + "isabelle build -D " + params.sIsaLarusFolder + "LarusSession";
+        int rv = system(s.c_str());
+        if (!rv)
+          cout << "IsabelleCorrect!";
+        else
+          cout << "IsabelleWrong!";
+        cout << endl << endl;
+      }
     }
     if (params.mbMizar) {
       ProofExport2Mizar exMizar;
@@ -735,6 +756,7 @@ ReturnValue ReadTPTPConjecture(const string inputFile, proverParams &params,
       if (type == eAxiom) {
         T.AddAxiom(cl, statementName);
         T.UpdateSignature(cl);
+
       } else if (type == eConjecture) {
         theorem = cl;
         theoremName = statementName;
@@ -743,8 +765,47 @@ ReturnValue ReadTPTPConjecture(const string inputFile, proverParams &params,
         cout << "       File name:    " << inputFile << endl;
         cout << "       Theorem name: " << theoremName << endl;
         cout << "       Conjecture:   " << theorem << endl;
+
       } else if (type == eHint) {
         hint = cl;
+
+        Fact hintFact = cl.GetGoal().GetElement(0).GetElement(0);
+        if (hintFact.GetName() != "_") {
+          bool bPredicateSymbolExists = false;
+          for(unsigned i = 0; i<T.mSignature.size() && !bPredicateSymbolExists; i++) {
+            if (hintFact.GetName() == T.mSignature[i].first) {
+              bPredicateSymbolExists = true;
+              if (hintFact.GetArity()
+                  != T.mSignature[i].second) {
+                cout << "Hint ill formed (wrong arity of predicate symbol)" << endl;
+                return eErrorReadingAxioms;
+              }
+            }
+          }
+          if (!bPredicateSymbolExists) {
+            cout << "Wrong hint (given predicate symbol does not exist)" << endl;
+            return eErrorReadingAxioms;
+          }
+        }
+        if (justification.GetName() != "_") {
+          bool bAxiomExists = false;
+          for(unsigned i = 0; i<T.mCLaxioms.size() && !bAxiomExists; i++) {
+            if (justification.GetName() ==
+                    T.mCLaxioms[i].second) {
+              bAxiomExists = true;
+              if (justification.GetArity()
+                  != T.mCLaxioms[i].first.GetNumOfUnivVars()+
+                     T.mCLaxioms[i].first.GetNumOfExistVars()) {
+                cout << "Hint justification ill formed (wrong number of variables)" << endl;
+                return eErrorReadingAxioms;
+              }
+            }
+          }
+          if (!bAxiomExists) {
+            cout << "Wrong hint (given axiom does not exist)" << endl;
+            return eErrorReadingAxioms;
+          }
+        }
         hints.push_back(tuple<CLFormula, string, string, Fact>(
             hint, statementName, ordinal, justification));
         cout << "Hint: name: " << statementName << "; hint formula: " << hint

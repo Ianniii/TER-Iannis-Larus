@@ -1,8 +1,7 @@
 #include "CLTheory/Formula.h"
-#include "CLTheory/Theory.h"
 #include <assert.h>
 
-//#define DEBUG_PARSER
+// #define DEBUG_PARSER
 
 // ---------------------------------------------------------------------------------------
 
@@ -606,7 +605,10 @@ bool CLFormula::IsSimpleImplication() const {
       GetGoal().GetElement(0).GetElement(0).GetName() == "false")
     return false;
 
-  if (numPremises == 1 && numDisj == 1 && GetNumOfExistVars() == 0)
+  if (numPremises == 1 &&
+      numDisj == 1 &&
+      GetGoal().GetElement(0).GetSize() == 1 &&
+      GetNumOfExistVars() == 0)
     return true;
 
   return false;
@@ -626,19 +628,27 @@ bool CLFormula::IsSimpleUnivFormula() const {
   if (GetGoal().GetElement(0).GetElement(0).GetName() == "false")
     return false;
 
-  /*    for (size_t i = 0; i<GetGoal().GetElement(0).GetElement(0).GetArity();
-     i++) {
-          bool notVar = true;
-          for (size_t j = 0; j<GetNumOfUnivVars() && notVar; j++) {
-              if (GetGoal().GetElement(0).GetElement(0).GetArg(i) ==
-     GetUnivVar(j))
-                  notVar = false;
-          }
-          if (notVar)
-              return false;
-      }*/
-
   return true;
+}
+
+// ----------------------------------------------------------
+
+bool CLFormula::IsSimpleFormula() const
+{
+    return IsSimpleImplication() || IsSimpleUnivFormula();
+/*
+    return (GetNumOfExistVars() == 0)
+           && (GetGoal().GetSize() == 1)
+           && (GetPremises().GetSize() <= 1);*/
+}
+
+// ----------------------------------------------------------
+
+bool CLFormula::IsSimpleFormulaWithoutDisjunction() const
+{
+    return (GetNumOfExistVars() == 0)
+           && (GetGoal().GetSize() == 1)
+           && (GetPremises().GetSize() <= 1);
 }
 
 // ---------------------------------------------------------------------------------------
@@ -660,7 +670,7 @@ bool ReadTPTPStatement(const string &s, CLFormula &cl, string &name,
   pos1 = ss.find(',');
   if (pos1 == string::npos) {
 #ifdef DEBUG_PARSER
-    cout << "Error: fof() should have three arguments." << endl;
+    cout << "Error: fof() should have three arguments (while hints should have five)." << endl;
 #endif
     return false;
   }
@@ -668,7 +678,7 @@ bool ReadTPTPStatement(const string &s, CLFormula &cl, string &name,
   pos2 = ss.find(',', pos1 + 1);
   if (pos2 == string::npos) {
 #ifdef DEBUG_PARSER
-    cout << "Error: fof() should have three arguments." << endl;
+    cout << "Error: fof() should have three arguments (while hints should have five)." << endl;
 #endif
     return false;
   }
@@ -693,43 +703,66 @@ bool ReadTPTPStatement(const string &s, CLFormula &cl, string &name,
   }
   if (s1 == string("axiom"))
     type = eAxiom;
-  if (s1 == string("conjecture"))
+  else if (s1 == string("conjecture"))
     type = eConjecture;
-  if (s1 == string("hint"))
+  else if (s1 == string("hint"))
     type = eHint;
+   else {
+#ifdef DEBUG_PARSER
+    cout << "Error: unknown entry type, found: " << s1 << endl;
+#endif
+    return false;
+  }
 
   ss = ss.substr(pos2 + 1, ss.size() - pos2 - 2);
-  // cout << "text: " << axname << " : " << ss << endl;
+  // cout << "text: " << name << " : " << ss << endl;
   if (type == eHint) {
     string s[3];
-    int BracketsClosed = 0;
+    int BracketsOpen = 0;
     int ord = 0;
     for (size_t i = 0; i < ss.size(); i++) {
       if (ss[i] == '(')
-        BracketsClosed++;
+        BracketsOpen++;
       if (ss[i] == ')')
-        BracketsClosed--;
-      if (ss[i] == ',' && BracketsClosed == 0)
+        BracketsOpen--;
+      if ((ss[i] == ',' && BracketsOpen == 0) ||
+          (ss[i] == ')' && BracketsOpen == 1 && i==ss.size()-1)) {
         ord++;
+        if (ord > 2) {
+          cout << "Error: hint should have five arguments." << endl;
+          return false;
+        }
+      }
       else
         s[ord] += ss[i];
     }
+    if (ord != 2) {
+      cout << "Error: hint should have five arguments." << endl;
+      return false;
+    }
+
     if (!cl.Read(s[0]))
       return false;
-    ordinal = s[1];
-    if (!justification.Read(s[2]))
+    if (!(cl.GetGoal().GetSize()==1 && cl.GetGoal().GetElement(0).GetSize()==1)) {
+      cout << "Error: hint formula can be only fact." << endl;
       return false;
+    }
+    ordinal = s[1];
+    if (!justification.Read(s[2])) {
+      cout << "Error: hint justification (fifth argument) cannot be read." << endl;
+      return false;
+    }
     return true;
   } else {
     ordinal = "";
-    //     justification = "";
+    // justification = "";
     if (cl.Read(ss)) {
-      //    cout << "Ax: " << cl;
-      //    cout << endl;
+    // cout << "Ax: " << cl;
+    // cout << endl;
       return true;
     } else {
       cout << "Ax: " << name << cl;
-      cout << "CL read fail! " << endl << endl;
+      cout << "CL hint read fail! " << endl << endl;
       return false;
     }
   }

@@ -9,7 +9,7 @@ using namespace std;
 bool STLFactsDatabase::AddFact(const Fact &f) {
   if (!FindFact(Canonize(f))) {
     mDatabase.insert(Canonize(f));
-    cout << "Added fact " << Canonize(f) << endl;
+    // cout << "Added fact " << Canonize(f) << endl;
     return true;
   }
   else
@@ -245,8 +245,7 @@ bool STLFactsDatabase::NextInstantiationOfUnivVars(
     } else {
       bool simple_check;
       do {
-        clock_t currentTime = clock();
-        double elapsed_secs = double(currentTime - mStartTime) / CLOCKS_PER_SEC;
+        double elapsed_secs = mTimer.elapsed();
         if (elapsed_secs > mTimeLimit)
           return false;
 

@@ -21,9 +21,12 @@ SMT_ProvingEngine::SMT_ProvingEngine(Theory *pT, proverParams &params) {
     mName = "QF_BV";
   else if (mSMT_theory == eSMTUFBV_ProvingEngine)
     mName = "QF_UFBV";
+  else if (mSMT_theory == eMiniZinc)
+    mName = "MiniZinc";
   else
     mName = "UNKNOWN";
 
+  mnMaxArity = 0;
   for(auto it = pT->mSignature.begin(); it < pT->mSignature.end(); it++)
     if (mnMaxArity < it->second)
       mnMaxArity = it->second;
@@ -31,9 +34,7 @@ SMT_ProvingEngine::SMT_ProvingEngine(Theory *pT, proverParams &params) {
 
 // ---------------------------------------------------------------------------------------
 
-void SMT_ProvingEngine::SetStartTimeAndLimit(const clock_t &startTime,
-                                             unsigned timeLimit) {
-  mStartTime = startTime;
+void SMT_ProvingEngine::SetTimeLimit(unsigned timeLimit) {
   mParams.time_limit = timeLimit;
 }
 
@@ -48,28 +49,30 @@ Expression SMT_ProvingEngine::CorrectnessConstraint()
          % "1. Each proof step s is one of the defined step kinds";
     }
 
-    // Global structure constraints
-    for(unsigned s = mnNumberOfAssumptions+1; s < mnNumberOfAssumptions + mProofLength; s++) {
-      Expression cc;
-      cc = ((Nesting(s) != 0u))
-            % "0: This condition is missing in the JAR paper; it is needed because of the way nesting is handled";
+    if (mParams.mbNeedsCaseSplits) {
+      // Global structure constraints
+      for(unsigned s = mnNumberOfAssumptions+1; s < mnNumberOfAssumptions + mProofLength; s++) {
+        Expression cc;
+        cc = ((Nesting(s) != 0u))
+              % "0: This condition is missing in the JAR paper; it is needed because of the way nesting is handled";
 
-      cc &= ((IsQEDStep(s - 1) == False()) | (Nesting(s - 1) != Nesting(s)))
-            % "2: If step s-1 is one of the QED steps, then Nesting (s-1) != Nesting (s):";
+        cc &= ((IsQEDStep(s - 1) == False()) | (Nesting(s - 1) != Nesting(s)))
+              % "2: If step s-1 is one of the QED steps, then Nesting (s-1) != Nesting (s):";
 
-      cc &= ((Cases(s - 1) == False()) | (StepKind(s) == FirstCase()))
-            % "3: If Cases(s-1) is true, then StepKind(s) = FirstCase ";
+        cc &= ((Cases(s - 1) == False()) | (StepKind(s) == FirstCase()))
+              % "3: If Cases(s-1) is true, then StepKind(s) = FirstCase ";
 
-      cc &= ((IsQEDStep(s - 1) == False()) | (OddNesting(s - 1)) |
-            (StepKind(s) == SecondCase()))
-            % "4: If step s-1 is one of the QED steps and Nesting(s-1) is even, then StepKind(s) = SecondCase";
+        cc &= ((IsQEDStep(s - 1) == False()) | (OddNesting(s - 1)) |
+              (StepKind(s) == SecondCase()))
+              % "4: If step s-1 is one of the QED steps and Nesting(s-1) is even, then StepKind(s) = SecondCase";
 
-      cc &= ((IsQEDStep(s - 1) == False()) | (OddNesting(s-1) == False()) |
-            (StepKind(s) == QEDbyCases()))
-            % "5: If step s-1 is one of the QED steps and Nesting(s-1) is odd, then StepKind(s) = QEDbyCases";
+        cc &= ((IsQEDStep(s - 1) == False()) | (OddNesting(s-1) == False()) |
+              (StepKind(s) == QEDbyCases()))
+              % "5: If step s-1 is one of the QED steps and Nesting(s-1) is odd, then StepKind(s) = QEDbyCases";
 
-      c &= ((Expression(s) >= ProofSize()) | cc) // This constraint is missing in the JAR paper on Larus!
-           % ("Constraints for the step " + itos(s) + " hold only if " + itos(s) + " is before the proof end:");
+        c &= ((Expression(s) >= ProofSize()) | cc) // This constraint is missing in the JAR paper on Larus!
+             % ("Constraints for the step " + itos(s) + " hold only if " + itos(s) + " is before the proof end:");
+      }
     }
 
     Expression cProofEnding;
@@ -103,11 +106,11 @@ Expression SMT_ProvingEngine::CorrectnessConstraint()
                            & (Nesting(s-1) == Nesting(s))
                            & (StepKind(s-1) == MP())
                            & (StepKind(s) == MP())) == False())
-                           | (AxiomApplied(s-1) < AxiomApplied(s)))
+                           | (AxiomApplied(s) >= AxiomApplied(s-1)))
                            % ("   9: Normalization condition for step " + itos(s));
       c &= cProofIsNormalized;
     }
-    return c % "\n ; ********************* Proof correctness constraint ******************";
+    return c;
 }
 
 // ----------------------------------------------------------
@@ -162,7 +165,6 @@ Expression SMT_ProvingEngine::IsMPstep(unsigned s)
 {
     Expression c = False();
     for(unsigned ax = 0; ax < mpT->mCLaxioms.size(); ax++)
-//      if (!mParams.mbInlineAxioms || !IsSimpleAxiom(ax) || s==mnNumberOfAssumptions)
       c |= IsMPstepByAxiom(s,ax);
     if (mParams.mbNativeEQsub)
       c |= IsMPbyEqSub(s);
@@ -186,8 +188,8 @@ Expression SMT_ProvingEngine::IsMPstepByAxiom(unsigned s, unsigned ax)
     }
     for (unsigned i = 0; i < GetAxiom(ax).GetNumOfExistVars(); i++) {
       /* The id of a new constant is */
-      /* mnMaxNumberOfVarsInAxioms*(nProofStep+1)+i, so they */
-      /* don't overlap, unless some axioms introduce >8 witnesses */
+      /* number of initial constants + mnMaxNumberOfVarsInAxioms*(nProofStep+1)+ i, */
+      /* so they don't overlap */
       c &= (Instantiation(s, GetAxiom(ax).GetNumOfUnivVars()+i) ==
             mnMaxNumberOfVarsInAxioms*s + (unsigned)(mpT->mConstants).size() + i + 1);
     }
@@ -238,13 +240,19 @@ Expression SMT_ProvingEngine::MatchAllPremises(unsigned s, unsigned ax)
 Expression SMT_ProvingEngine::MatchPremiseToSomeStep(unsigned s, unsigned ax, unsigned i)
 {
     Expression c = False();
-    for(unsigned ss=0; ss < s; ss++) {
-      c |= (MatchPremiseToStep(s, ax, i, ss)
-           % ("Match premise " + itos(i) + " to step " + itos(ss)));
+    if (GetAxiom(ax).GetPremises().GetElement(i).GetName() == "true") {
+      c = (From(s,i) == s); // special case, where there is no "from"
+    } else {
+      for(unsigned ss=0; ss < s; ss++) {
+        c |= (MatchPremiseToStep(s, ax, i, ss)
+             % ("Match premise " + itos(i) + " to step " + itos(ss)));
+      }
+      // do not use inlining for premises of simple axioms
+      // (but simple axioms have to be used not only by inlining)
+      if (mParams.mbInlineAxioms && !GetAxiom(ax).IsSimpleFormula())
+        c |= (MatchPremiseInline(s, ax, i)
+             % ("Match premise " + itos(i) + " inline"));
     }
-    if (mParams.mbInlineAxioms)
-      c |= (MatchPremiseInline(s, ax, i)
-           % ("Match premise " + itos(i) + " inline"));
     return c;
 }
 
@@ -253,20 +261,15 @@ Expression SMT_ProvingEngine::MatchPremiseToSomeStep(unsigned s, unsigned ax, un
 Expression SMT_ProvingEngine::MatchPremiseToStep(unsigned s, unsigned ax, unsigned i, unsigned ss)
 {
     Expression c;
-    if (GetAxiom(ax).GetPremises().GetElement(i).GetName() == "true") {
-      c = (From(s,i) == s); // special case, where there is no "from"
-    }
-    else {
-      c = (From(s,i) == ss)
-        & (Cases(ss) == False())
-        & (SameBranch(ss,s))
-        & (ContentsPredicate(ss,0) == GetAxiom(ax).GetPremises().GetElement(i).GetName());
-      for(unsigned j=0; j < GetAxiom(ax).GetPremises().GetElement(i).GetArity(); j++) {
-        if (BindingAxiomPremises(ax, i, j) != 0)
-          c &= (ContentsArgument(ss,0,j) == Instantiation(s,BindingAxiomPremises(ax, i, j)-1));
-        else // it is a constant
-         c &= (ContentsArgument(ss,0,j) == CONSTANTS[GetAxiom(ax).GetPremises().GetElement(i).GetArg(j)]);
-      }
+    c = (From(s,i) == ss)
+      & (Cases(ss) == False())
+      & (SameBranch(ss,s))
+      & (ContentsPredicate(ss,0) == GetAxiom(ax).GetPremises().GetElement(i).GetName());
+    for(unsigned j=0; j < GetAxiom(ax).GetPremises().GetElement(i).GetArity(); j++) {
+      if (BindingAxiomPremises(ax, i, j) != 0)
+        c &= (ContentsArgument(ss,0,j) == Instantiation(s,BindingAxiomPremises(ax, i, j)-1));
+      else // it is a constant
+        c &= (ContentsArgument(ss,0,j) == CONSTANTS[GetAxiom(ax).GetPremises().GetElement(i).GetArg(j)]);
     }
     return c;
 }
@@ -282,7 +285,7 @@ Expression SMT_ProvingEngine::MatchPremiseInline(unsigned s, unsigned ax, unsign
     // An axiom q(x,y) => r(x,y) can be used, while p(x,b) => q(b,x) is inlined
     Expression cOneOfInlineAxioms = False();
     for(unsigned axInl = 0; axInl < mpT->mCLaxioms.size(); axInl++) {
-      if (IsSimpleAxiom(axInl) &&
+      if (GetAxiom(axInl).IsSimpleFormula() &&
           GetAxiom(axInl).GetGoal().GetElement(0).GetElement(0).GetName()
           == GetAxiom(ax).GetPremises().GetElement(i).GetName())
       {
@@ -652,15 +655,6 @@ const CLFormula& SMT_ProvingEngine::GetAxiom(unsigned k)
 
 // ----------------------------------------------------------
 
-bool SMT_ProvingEngine::IsSimpleAxiom(unsigned ax)
-{
-    return (GetAxiom(ax).GetNumOfExistVars() == 0)
-           && (GetAxiom(ax).GetGoal().GetSize() == 1)
-           && (GetAxiom(ax).GetPremises().GetSize() <= 1);
-}
-
-// ----------------------------------------------------------
-
 void SMT_ProvingEngine::ComputeBindingForAxioms()
 {
     for (unsigned k = 0; k < mpT->NumberOfAxioms(); k++)
@@ -789,10 +783,11 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
   for(unsigned proofStep = from; proofStep <= to; proofStep++) {
     Expression oneStep;
     oneStep = (Expression(proofStep) < ProofSize());
-    if (hintFormula.GetGoal().GetSize() == 1)
-      oneStep &= (Cases(proofStep) == False());
-    else
-      oneStep &= (Cases(proofStep) == True());
+//    if (hintFormula.GetGoal().GetSize() == 1)
+//      oneStep &= (Cases(proofStep) == False());
+//    else
+//      oneStep &= (Cases(proofStep) == True());
+    oneStep &= (StepKind(proofStep) == MP());
     if (AxiomUsed != -1) {
       oneStep &= (AxiomApplied(proofStep) == (unsigned)AxiomUsed);
     for (size_t i = 0; i < justification.GetArity(); i++) {
@@ -823,7 +818,6 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
         }
       }
     }
-
     oneOfSteps |= oneStep;
   }
 
@@ -837,6 +831,7 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
 // ---------------------------------------------------------------------------------------
 
 bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& proof) {
+  Timer t;
   bool ret = false;
   bool bTimeOut = false;
   mGoal = formula;
@@ -869,19 +864,18 @@ bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& pr
     }
 
     if (!bTimeOut && mParams.shortest_proof && best) {
-      time_t start_time = time(NULL);
+      t.start();
       cout << "  --proof reconstruction..." << flush;
       ret = ReconstructProof(formula, proof);
       assert(ret);
       cout << endl << "  --simplifying the proof (size without assumptions: "
            << proof.Size() - proof.NumOfAssumptions() << ")" << flush;
-      proof.Simplify();
+      proof.SimplifyByProofSteps();
       cout << endl << "  --new proof length without assumptions: "
            << proof.Size() - proof.NumOfAssumptions() << endl;
 
-      time_t current_time = time(NULL);
-      mParams.time_limit = mParams.time_limit - difftime(current_time, start_time);
-      cout << "  --(remaining time: " << mParams.time_limit << "s); " << endl << flush;
+      mParams.time_limit = mParams.time_limit - t.elapsed();
+      cout << "  --(remaining time: " << fixed << setprecision(2) << mParams.time_limit << "s); " << endl << flush;
 
       r = proof.Size() - proof.NumOfAssumptions();
       best = r;
@@ -890,7 +884,6 @@ bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& pr
       bTimeOut = false;
       while (!bTimeOut && l <= r && l != best) {
         s = (l + r) / 2;
-
         switch (OneProvingAttempt(formula, l)) {
           case eTimeLimitExceeded:
             bTimeOut = true;
@@ -909,13 +902,12 @@ bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& pr
 
     cout << endl;
     if (best > 0 && best != best_start) {
-      time_t start_time = time(NULL);
+      t.start();
       cout << "  --proof reconstruction..." << flush;
       ret = ReconstructProof(formula, proof);
       assert(ret);
-      time_t current_time = time(NULL);
-      mParams.time_limit = mParams.time_limit - difftime(current_time, start_time);
-      cout << "(remaining time: " << mParams.time_limit << "s); " << endl << flush;
+      mParams.time_limit = mParams.time_limit - t.elapsed();
+      cout << "(remaining time: " << fixed << setprecision(2) << mParams.time_limit << "s); " << endl << flush;
       cout << "Length of the shortest proof found: " << best << endl;
     }
   }
@@ -934,36 +926,49 @@ bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& pr
 ReturnValue SMT_ProvingEngine::OneProvingAttempt(const DNFFormula& formula, unsigned length)
 {
     cout << endl << "Looking for a proof of length: " << length << " " << flush;
-    cout << "(remaining time: " << mParams.time_limit << "s); " << endl << flush;
+    cout << "(remaining time: " << fixed << setprecision(2) << mParams.time_limit << "s); " << endl << flush;
     if (mParams.time_limit <= 0)
       return eTimeLimitExceeded;
 
-    string smt_proofencoded_filename = "constraints_for_proof.smt"; // tmpnam(NULL); //
-    string smt_model_filename = tmpnam(NULL); // "smt_model_for_proof.txt";          //
+    string smt_proofencoded_filename;
+    if (mSMT_theory != eMiniZinc) // SMT
+       smt_proofencoded_filename = "constraints_for_proof.smt"; // tmpnam(NULL); //
+    else // MiniZinc
+       smt_proofencoded_filename = "constraints_for_proof.mzn"; // tmpnam(NULL); //
+
+    string smt_model_filename = "model_for_proof.txt";          // tmpnam(NULL); //
     mProofLength = length;
     cout << "  --proof encoding..." << flush;
-    time_t start_time = time(NULL);
+    Timer t;
+    t.start();
     EncodeProofToSMT(formula, length, smt_proofencoded_filename);
-    time_t current_time = time(NULL);
-    mParams.time_limit = mParams.time_limit - difftime(current_time, start_time);
-    cout << "(remaining time: " << mParams.time_limit << "s); " << endl << flush;
+    mParams.time_limit = mParams.time_limit - t.elapsed();
+    cout << "(remaining time: " << fixed << setprecision(2) << mParams.time_limit << "s); " << endl << flush;
     if (mParams.time_limit <= 0)
       return eTimeLimitExceeded;
-    const string sCall = "timeout " + to_string(mParams.time_limit) + " z3  " +
-                         smt_proofencoded_filename + " > " +
-                         smt_model_filename;
-    cout << "  --invoking solver..." << flush;
-    start_time = time(NULL);
-    /*int rv =*/system(sCall.c_str());
-    current_time = time(NULL);
-    mParams.time_limit = mParams.time_limit - difftime(current_time, start_time);
-    cout << "(remaining time: " << mParams.time_limit << "s); " << flush;
-    if (!ReadModel(smt_model_filename)) {
 
+    string sSolver = (mSMT_theory == eMiniZinc) ? "minizinc --solver or-tools" : "z3";
+    const string sCall = "timeout " + to_string(mParams.time_limit) + " " + sSolver + " " +
+                         smt_proofencoded_filename + " > " +
+                         smt_model_filename + " 2> /dev/null";
+    cout << "  --invoking solver..." << flush;
+    t.start();
+    int rv = system(sCall.c_str());
+    if (WEXITSTATUS(rv) == 127) { // Salwa Gonzalez added this check
+      cout << endl << "z3/CSP solver not found in the PATH!" << endl << flush;
+      return eConjectureNotProved;
+    }
+    mParams.time_limit = mParams.time_limit - t.elapsed();
+    cout << "(remaining time: " << fixed << setprecision(2) << mParams.time_limit << "s); " << flush;
+    if (!ReadModel(smt_model_filename)) {
       cout << " proof not found " << endl << flush;
+      if (mParams.time_limit <= 0) {
+        cout << endl << "Time limit reached." << endl << flush;
+        return eTimeLimitExceeded;
+      }
       return eConjectureNotProved;
     } else {
-      cout << " proof FOUND! " << endl << flush;
+      cout << " proof FOUND! " << flush;
       return eConjectureProved;
     }
 }
@@ -974,9 +979,12 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
                                             unsigned nProofLen,
                                             string prove_smt_filename) {
     mSMTfile.open(prove_smt_filename);
-    // smtFile << "(set-option :print-success false)" << endl;
-    mSMTfile << "(set-option :produce-models true)" << endl;
-    mSMTfile << "(set-logic " + mName + ")" << endl << endl;
+
+    if (mSMT_theory != eMiniZinc) { // SMT
+      // smtFile << "(set-option :print-success false)" << endl;
+      mSMTfile << "(set-option :produce-models true)" << endl;
+      mSMTfile << "(set-logic " + mName + ")" << endl << endl;
+    }
 
     mnMaxArity = 0;
     for (size_t i = 0; i < mpT->mSignature.size(); i++) {
@@ -985,13 +993,13 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
     }
 
     AddComment("**************************** Declarations *****************************");
-    DeclareVarBasicType(Assumption());
-    DeclareVarBasicType(FirstCase());
-    DeclareVarBasicType(SecondCase());
-    DeclareVarBasicType(QEDbyCases());
-    DeclareVarBasicType(QEDbyAssumption());
-    DeclareVarBasicType(QEDbyEFQ());
-    DeclareVarBasicType(MP());
+    DeclareVarBasicType(Assumption(),      eNumberOfStepKinds);
+    DeclareVarBasicType(FirstCase(),       eNumberOfStepKinds);
+    DeclareVarBasicType(SecondCase(),      eNumberOfStepKinds);
+    DeclareVarBasicType(QEDbyCases(),      eNumberOfStepKinds);
+    DeclareVarBasicType(QEDbyAssumption(), eNumberOfStepKinds);
+    DeclareVarBasicType(QEDbyEFQ(),        eNumberOfStepKinds);
+    DeclareVarBasicType(MP(),              eNumberOfStepKinds);
     Assert(Assumption()      == 0x000u);
     Assert(FirstCase()       == 0x002u);
     Assert(SecondCase()      == 0x003u);
@@ -1007,14 +1015,14 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
         mnMaxNumberOfPremisesInAxioms = it->first.GetPremises().GetSize();
 
     for (size_t i = 0; i < mpT->mSignature.size(); i++)
-      DeclareVarBasicType(ToUpper(mpT->mSignature[i].first));
+      DeclareVarBasicType(ToUpper(mpT->mSignature[i].first), mpT->mSignature.size());
 
     for (vector<string>::const_iterator it = mpT->mConstants.begin();
          it != mpT->mConstants.end(); it++)
-      DeclareVarBasicType(ToUpper(*it));
+      DeclareVarBasicType(ToUpper(*it), mpT->mConstants.size());
     for (set<string>::iterator it = mpT->mConstantsPermissible.begin();
          it != mpT->mConstantsPermissible.end(); it++)
-      DeclareVarBasicType(ToUpper(*it));
+      DeclareVarBasicType(ToUpper(*it),mpT->mConstantsPermissible.size());
 
     mnMaxNumberOfVarsInAxioms = 0;
     for (vector<pair<CLFormula, string>>::iterator it = mpT->mCLaxioms.begin();
@@ -1034,35 +1042,40 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
     }
 
     unsigned nFinalStep = mnNumberOfAssumptions + nProofLen - 1;
-    DeclareVarBasicType(ProofSize());
+    DeclareVarBasicType(ProofSize(), nFinalStep+1);
     //for(unsigned i = mnNumberOfAssumptions; i <= mnNumberOfAssumptions + mProofLength; i++) {
     for (unsigned i=0; i <= nFinalStep; i++) {
-      DeclareVarBasicType(StepKind(i));
-      DeclareVarBasicType(AxiomApplied(i));
-      DeclareVarBasicType(Nesting(i));
+      DeclareVarBasicType(StepKind(i), eNumberOfStepKinds);
+      DeclareVarBasicType(AxiomApplied(i), mpT->mCLaxioms.size());
+      DeclareVarBasicType(Nesting(i), 1 << (mParams.max_nesting_depth+1));
       DeclareVarBoolean(OddNesting(i));
       for (unsigned j=i+1; j <= nFinalStep; j++) {
         DeclareVarBoolean(SameBranch(i,j));
       }
-      DeclareVarBasicType(ContentsPredicate(i,0));
-      DeclareVarBasicType(ContentsPredicate(i,1));
+      DeclareVarBasicType(ContentsPredicate(i,0), mpT->mSignature.size());
+      DeclareVarBasicType(ContentsPredicate(i,1), mpT->mSignature.size());
       DeclareVarBoolean(Cases(i));
       DeclareVarBoolean(IsGoal(i));
 
+      unsigned nMaxConstants =
+              mnMaxNumberOfVarsInAxioms * (nFinalStep+1) +
+              mpT->mConstants.size() +
+              mpT->mConstantsPermissible.size();
+
       for (unsigned k=0; k < mnMaxArity; k++) {
-        DeclareVarBasicType(ContentsArgument(i,0,k));
-        DeclareVarBasicType(ContentsArgument(i,1,k));
+        DeclareVarBasicType(ContentsArgument(i,0,k), nMaxConstants);
+        DeclareVarBasicType(ContentsArgument(i,1,k), nMaxConstants);
       }
       for (unsigned k=0; k < mnMaxNumberOfVarsInAxioms; k++) {
-        DeclareVarBasicType(Instantiation(i,k));
+        DeclareVarBasicType(Instantiation(i,k), nMaxConstants);
       }
       for (unsigned k=0; k < mnMaxNumberOfPremisesInAxioms; k++) {
         for (unsigned j=0; j < mnMaxNumberOfVarsInAxioms; j++) {
-          DeclareVarBasicType(InstantiationInline(i,k,j));
+          DeclareVarBasicType(InstantiationInline(i,k,j), nMaxConstants);
         }
       }
       for (unsigned j=0; j < mnMaxNumberOfPremisesInAxioms; j++) {
-        DeclareVarBasicType(From(i,j));
+        DeclareVarBasicType(From(i,j), nFinalStep);
       }
     }
 
@@ -1126,7 +1139,7 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
     for (size_t i = 0; i < formula.GetElement(0).GetElement(0).GetArity(); i++) {
       if (CONSTANTS.find(formula.GetElement(0).GetElement(0).GetArg(i)) == CONSTANTS.end()
           && exi_vars.find(formula.GetElement(0).GetElement(0).GetArg(i)) == exi_vars.end()) {
-        DeclareVarBasicType(ToUpper(formula.GetElement(0).GetElement(0).GetArg(i)));
+        DeclareVarBasicType(ToUpper(formula.GetElement(0).GetElement(0).GetArg(i)), 1000); //todo
         exi_vars.insert(formula.GetElement(0).GetElement(0).GetArg(i));
       }
     }
@@ -1135,7 +1148,7 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
         if (CONSTANTS.find(formula.GetElement(1).GetElement(0).GetArg(i)) == CONSTANTS.end() &&
           exi_vars.find(formula.GetElement(1).GetElement(0).GetArg(i)) ==
                 exi_vars.end()) {
-          DeclareVarBasicType(ToUpper(formula.GetElement(1).GetElement(0).GetArg(i)));
+          DeclareVarBasicType(ToUpper(formula.GetElement(1).GetElement(0).GetArg(i)), 1000);//todo
           exi_vars.insert(formula.GetElement(1).GetElement(0).GetArg(i));
         }
       }
@@ -1177,15 +1190,20 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
 
       for (unsigned i = mnNumberOfAssumptions; i <= nFinalStep; i++) {
         Expression c = False();
-        unsigned power2 = 1;
-        for (unsigned j = 0; j < mParams.max_nesting_depth; j++)
-          power2 *= 2;
-        for (unsigned j = 1; j < power2; j += 2) {
-          c |= (Nesting(i) == j);
+        if (mSMT_theory == eSMTBV_ProvingEngine ||
+            mSMT_theory == eSMTUFBV_ProvingEngine) {
+           c = (Expression(eBVAnd,Nesting(i),1u) == 1u);
+        } else {
+          for (unsigned j = 1; j < (unsigned)(1 << (mParams.max_nesting_depth+1)); j += 2) {
+            c |= (Nesting(i) == j);
+          }
         }
         Assert(OddNesting(i) == c);
       }
       for (unsigned i = mnNumberOfAssumptions; i <= nFinalStep; i++) {
+
+        Assert(Nesting(i) < (unsigned)(1 << (mParams.max_nesting_depth+1)));
+
         for (unsigned j=i+1; j <= nFinalStep; j++) {
           Expression c = False();
           unsigned power2 = 1;
@@ -1198,7 +1216,6 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
               c |= ((Nesting(j) >= Nesting(i)*power2) & (Nesting(j) < (Nesting(i) * power2) + power2));
               power2 *= 2;
             }
-
           }
           Assert(SameBranch(i,j) == c);
         }
@@ -1227,6 +1244,7 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
   AddComment("");
   AddComment("");
 
+  AddComment("********************* Proof correctness constraint ******************");
   Assert(CorrectnessConstraint());
 
 /*  if (mSMT_theory == eSMTUFLIA_ProvingEngine ||
@@ -1242,7 +1260,10 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
         mSMTfile << *it << endl;
     mSMTfile << "))" << endl;
   } else */
- {
+  if (mSMT_theory == eMiniZinc) {
+    mSMTfile << "solve satisfy;" << endl;
+  }
+  else {
     mSMTfile << "(check-sat)" << endl;
     mSMTfile << "(get-model)" << endl;
   }
@@ -1257,43 +1278,54 @@ bool SMT_ProvingEngine::ReadModel(const string &sModelFile)  {
     return false;
   if (smtmodel.peek() == std::ifstream::traits_type::eof()) // empty model
     return false;
-  string str;
-  if (!getline(smtmodel, str)) {
-    cout << "Error in the model file!" << endl;
-    return false;
-  }
-  if (str == "unsat" || str != "sat") {
-    return false;
-  }
-  if (!getline(smtmodel, str)) {
-    cout << "Error in the model file!" << endl;
-    return false;
-  }
+  string strVarName, strVal, strLine;
+  if (mSMT_theory != eMiniZinc) { // SMT
+    if (!getline(smtmodel, strLine)) {
+       cout << "Error in the model file!" << endl;
+       return false;
+    }
+    if (strLine == "unsat" || strLine != "sat") {
+       return false;
+    }
+    if (!getline(smtmodel, strLine)) {
+       cout << "Error in the model file!" << endl;
+       return false;
+    }
+    if (strLine.substr(0,strlen("(model")) != "(model" &&
+       strLine.substr(0,strlen("(")) != "(")
+       return false;
+    // {if (!(mSMT_theory == eSMTUFLIA_ProvingEngine ||
+    //       mSMT_theory == eSMTUFBV_ProvingEngine))
+    // getline(smtmodel, str);
+    // else
+    // str = ""; }
 
-  if (str.substr(0,strlen("(model")) != "(model" &&
-      str.substr(0,strlen("(")) != "(")
-    return false;
-      // {if (!(mSMT_theory == eSMTUFLIA_ProvingEngine ||
-      //       mSMT_theory == eSMTUFBV_ProvingEngine))
-        // getline(smtmodel, str);
-      // else
-        // str = ""; }
-
-  string strVarName, strVal;
-  while (getline(smtmodel, strVarName) && getline(smtmodel, strVal)) {
-    if (mSMT_theory == eSMTUFLIA_ProvingEngine ||
-        mSMT_theory == eSMTUFBV_ProvingEngine) {
+    while (getline(smtmodel, strVarName) && getline(smtmodel, strVal)) {
+      if (mSMT_theory == eSMTUFLIA_ProvingEngine ||
+          mSMT_theory == eSMTUFBV_ProvingEngine) {
         strVarName = strVarName.substr(strlen("  (define-fun "), strVarName.size() - 1);
         strVarName = strVarName.substr(0, strVarName.find(' '));
         strVal = strVal.substr(strlen("    "), strVal.size());
         strVal = strVal.substr(0, strVal.find(')'));
         StoreValueFromModel(strVarName, strVal);
+      }
+      else {
+        strVarName = strVarName.substr(strlen("  (define-fun "), strVarName.size() - 1);
+        strVarName = strVarName.substr(0, strVarName.find(' '));
+        strVal = strVal.substr(strlen("    "), strVal.size());
+        strVal = strVal.substr(0, strVal.find(')'));
+        StoreValueFromModel(strVarName, strVal);
+      }
     }
-    else {
-      strVarName = strVarName.substr(strlen("  (define-fun "), strVarName.size() - 1);
-      strVarName = strVarName.substr(0, strVarName.find(' '));
-      strVal = strVal.substr(strlen("    "), strVal.size());
-      strVal = strVal.substr(0, strVal.find(')'));
+  } else { // MiniZinc
+    while (getline(smtmodel, strLine)) {
+      if (strLine.find("------") != string::npos)
+        return true;
+      if (strLine.find(" = ") == string::npos)
+        return false;
+      strVarName = strLine.substr(0, strLine.find(" = "));
+      strVal = strLine.substr(strLine.find(" = ")+3, strLine.size()-strLine.find(" = ")-4);
+      // cout << "Value: " << strVarName << "=" << strVal << endl;
       StoreValueFromModel(strVarName, strVal);
     }
   }
@@ -1315,7 +1347,7 @@ bool SMT_ProvingEngine::StoreValueFromModel(string& strVarName, string& strVal)
     s = s.substr(s.find("_r_") + strlen("_r_"), s.size());
   }
 
-  if (strVarName[0] == 'b') { // boolean
+  if (strVarName[0] == 'b' && strVarName != "bot") { // boolean
     bVal = (strVal == "true");
   }
   else if (mSMT_theory == eSMTBV_ProvingEngine ||
@@ -1411,12 +1443,15 @@ bool SMT_ProvingEngine::ReconstructSubproof(const DNFFormula &formula,
             numOfExistVars = mpT->mCLaxioms[nAxiom].first.GetNumOfExistVars();
           }
         }
-        for (size_t i = 0; i < mpT->GetSymbolArity(msPredicates[nPredicate]); i++) {
-          if (msConstants.find(meProof[step].ContentsArgument[0][i]) == msConstants.end()
-              && numOfExistVars == 0) // eliminate spurious constants, also for inst[]
-         //   meProof[step].ContentsArgument[i][i] = 0;
-              meProof[step].ContentsArgument[0][i] = 0;
-        }
+
+        if (nStepKind != eQEDbyCases &&
+            nStepKind != eQEDbyAssumption &&
+            nStepKind != eQEDbyEFQ)
+          for (size_t i = 0; i < mpT->GetSymbolArity(msPredicates[nPredicate]); i++) {
+            if (msConstants.find(meProof[step].ContentsArgument[0][i]) == msConstants.end()
+                && numOfExistVars == 0) // eliminate spurious constants, also for inst[]
+                meProof[step].ContentsArgument[0][i] = 0;
+          }
 
         if (nStepKind == eAssumption) {
           Fact f;
@@ -1569,7 +1604,7 @@ bool SMT_ProvingEngine::ReconstructSubproof(const DNFFormula &formula,
             }
           }
           string axiomName = bIsEqSub ? "EqSub" : mpT->mCLaxioms[nAxiom].second;
-          proof.AddMPstep(cfPremises, d, axiomName, fromSteps, instantiation, new_witnesses);
+          proof.AddMPstep(cfPremises, d, axiomName, fromSteps, instantiation, new_witnesses, step);
        }
   }
   return true;
@@ -1577,10 +1612,14 @@ bool SMT_ProvingEngine::ReconstructSubproof(const DNFFormula &formula,
 
 // ----------------------------------------------------------
 
-void SMT_ProvingEngine::DeclareVarBasicType(const Expression& Var)
+void SMT_ProvingEngine::DeclareVarBasicType(const Expression& Var, unsigned UpperLimit)
 {
   string SMT_type;
-  if (mSMT_theory == eSMTBV_ProvingEngine || mSMT_theory == eSMTUFBV_ProvingEngine)
+  if (mSMT_theory == eMiniZinc) {
+    mSMTfile << "var 0.." + itos(UpperLimit) + ": " + Var.toSMT(mSMT_theory) + ";" << endl;
+    return;
+  }
+  else if (mSMT_theory == eSMTBV_ProvingEngine || mSMT_theory == eSMTUFBV_ProvingEngine)
     SMT_type = "(_ BitVec 12)";
   else
     SMT_type = "Int";
@@ -1593,6 +1632,10 @@ void SMT_ProvingEngine::DeclareVarBasicType(const Expression& Var)
 
 void SMT_ProvingEngine::DeclareVarBoolean(const Expression& Var)
 {
+  if (mSMT_theory == eMiniZinc) {
+    mSMTfile << "var bool: " + Var.toSMT(mSMT_theory) + ";" << endl;
+    return;
+  }
   mSMTfile << "(declare-const " + Var.toSMT(mSMT_theory) + " " + "Bool" + " )" << endl;
   if (GETVALUE.find(Var.toSMT(mSMT_theory)) == GETVALUE.end())
     GETVALUE.insert(Var.toSMT(mSMT_theory));
@@ -1602,14 +1645,22 @@ void SMT_ProvingEngine::DeclareVarBoolean(const Expression& Var)
 
 void SMT_ProvingEngine::Assert(const Expression& c)
 {
-  mSMTfile << "(assert " + c.toSMT(mSMT_theory) + ")" << endl;
+  if (mSMT_theory == eMiniZinc) {
+    mSMTfile << "constraint " + c.toMiniZinc(mSMT_theory) + ";" << endl;
+  }
+  else {
+    mSMTfile << "(assert " + c.toSMT(mSMT_theory) + ")" << endl;
+  }
 }
 
 // ----------------------------------------------------------
 
 void SMT_ProvingEngine::AddComment(const string& comment)
 {
-  mSMTfile << "; " + comment << endl;
+  if (mSMT_theory == eMiniZinc)
+    mSMTfile << "% " + comment << endl;
+  else
+    mSMTfile << "; " + comment << endl;
 }
 
 // ----------------------------------------------------------
