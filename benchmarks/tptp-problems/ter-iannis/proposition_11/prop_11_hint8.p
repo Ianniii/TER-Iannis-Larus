@@ -35,5 +35,5 @@ fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & 
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
 fof(proposition_11_int,conjecture,(! [A,B,C,E,F] : ((betS(A,C,B) & betS(A,C,E) & equilateral(A,E,F) & triangle(A,E,F) =>  (C != F) )))).
 
-%fof(hintname0, hint, _, _, defncollinear(0,?,2)).
+fof(hintname0, hint, _, _, defncollinear(0,?,2)).
 %fof(hintname1, hint, _, _, defcollinear2f(0,?,2)).

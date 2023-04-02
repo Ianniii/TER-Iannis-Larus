@@ -1,15 +1,9 @@
 %%% ./larus -vcoq -m10 -l50 benchmarks/tptp-problems/ter-iannis/lemma_twoperpsparallel/hint3.p
-% -m12
-% Without hintname2 :
-% Time 89s Size 12 (6)
-% With hintname2 :
-% Time 32s Size 12 (11) 
-
-% -m8
-% Without hintname2 :
-% Time 21s Size 8 (5)
-% With hintname2 :
-% Time 6s Size 8 (6)
+% -m10
+% Without hintname4 :
+% Time 5s Size 9 (6)
+% With hintname4 :
+% Time 3s Size 7 (5) 
 
 fof(lemma_rightangleNC,axiom, (! [A,B,C] : ((per(A,B,C)) => ((~ (col(A,B,C))))))).
 fof(lemma_NCdistinct,axiom, (! [A,B,C] : ((~ (col(A,B,C))) => ((( A != B ) & ( B != C ) & ( A != C ) & ( B != A ) & ( C != B ) & ( C != A )))))).
@@ -36,10 +30,11 @@ fof(deftworightangles2,axiom, (! [A,B,C,D,E,F,X,Y,Z,U,V] : ((supp(X,Y,U,V,Z) & c
 fof(proposition_28C,axiom, (! [B,D,G,H] : ((rT(B,G,H,G,H,D) & oS(B,D,G,H)) => ((par(G,B,H,D)))))).
 fof(lemma_parallelsymmetric,axiom, (! [A,B,C,D] : ((par(A,B,C,D)) => ((par(C,D,A,B)))))).
 fof(lemma_parallelflip,axiom, (! [A,B,C,D] : ((par(A,B,C,D)) => ((par(B,A,C,D) & par(A,B,D,C) & par(B,A,D,C)))))).
-fof(lemma_twoperpsparallel,conjecture,(! [A,B,C,D] : (?[E] : ((per(A,B,C) & per(B,C,D) & oS(A,D,B,C)) => (betS(B,C,E) & per(D,C,E) & supp(B,C,D,D,E)))))).
+fof(lemma_twoperpsparallel,conjecture,(! [A,B,C,D] : (?[E] : ((per(A,B,C) & per(B,C,D) & oS(A,D,B,C)) => (supp(B,C,D,D,E)))))).
 
-fof(hintname0, hint, _, _, lemma_extension(1,2,1,2)).
+fof(hintname0, hint, _, _, lemma_extension(1,2,1,2,?)).
 fof(hintname1, hint, _, _, lemma_collinearright(1,2,?,3)).
 fof(hintname2, hint, _, _, lemma_rightangleNC(1,2,3)).
-fof(hintname3, hint, _, _, defsupplement(1,2,3,3,?)).
+fof(hintname4, hint, _, _, lemma_ray4_2(2,3,3)).
+%fof(hintname3, hint, _, _, defsupplement(1,2,3,3,?)).
 
