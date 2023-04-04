@@ -1,14 +1,14 @@
-% ./larus -vcoq -m10 -l40 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint8.p
-% cat proofs/PROOFprop_11_hint8pQF_BVmin.v
-% cat proofs/PROOFprop_11_hint8pQF_BV.v
+% ./larus -vcoq -m5 -l40 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint10.p
+% cat proofs/PROOFprop_11_hint9pQF_BVmin.v
+% cat proofs/PROOFprop_11_hint9pQF_BV.v
 
-%%% Without hint
-% None
-% With -i : Size 11 Time 2s (if -m12 but not with -m11)
+%%% Without hint -10
+% -i  : 
+% Without -i : Size 5 Time 13s
 
-%%% With hints
-% -i : Size 10 Time 2s
-% Without -i : Size 9 Time 4s
+%%% With hints -6
+% -i : 
+% Without -i : Size 5 Time 4s
 
 %% 
 
@@ -28,13 +28,18 @@ fof(defcollinear2c,axiom, (! [A,B,C] : ((( B = C )) => ((col(A,B,C)))))).
 fof(defcollinear2d,axiom, (! [A,B,C] : ((betS(B,A,C)) => ((col(A,B,C)))))).
 fof(defcollinear2e,axiom, (! [A,B,C] : ((betS(A,B,C)) => ((col(A,B,C)))))).
 fof(defcollinear2f,axiom, (! [A,B,C] : ((betS(A,C,B)) => ((col(A,B,C)))))).
+fof(defcollinear2g,axiom, (! [A,B,C,D] : ((betS(A,D,B) & triangle(A,B,C)) => ((~(col(A,D,C))) & (~(col(B,D,C))))))).
 fof(lemma_collinearorder,axiom, (! [A,B,C] : ((col(A,B,C)) => ((col(B,A,C) & col(B,C,A) & col(C,A,B) & col(A,C,B) & col(C,B,A)))))).
 fof(deftriangle,axiom, (! [A,B,C] : ((triangle(A,B,C)) => ((~ (col(A,B,C))))))).
 fof(deftriangle2,axiom, (! [A,B,C] : ((~ (col(A,B,C))) => ((triangle(A,B,C)))))).
+fof(deftriangle3,axiom, (! [A,B,C] : ((triangle(A,B,C)) => (triangle(A,C,B) & triangle(B,A,C) & triangle(C,B,A) & triangle(B,C,A) & triangle(C,A,B))))).
 fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C ))))))).
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
-fof(proposition_11_int,conjecture,(! [A,B,C,E,F] : ((betS(A,C,B) & betS(A,C,E) & equilateral(A,E,F) & triangle(A,E,F) =>  (C != F) )))).
+fof(proposition_11,conjecture,(! [A,B,C] : (? [X] : ((betS(A,C,B)) => (per(A,C,X) ))))).
 
-%fof(hintname0, hint, _, _, defncollinear(0,?,2)).
-%fof(hintname1, hint, _, _, defcollinear2f(0,?,2)).
-fof(hintname2, hint, (2 != ?) | (2 = ?), _, _).
+fof(hintname0, hint,_, _, lemma_extension(0,2,0,2,?)).
+fof(hintname1, hint, _, _, lemma_doublereverse(2,?,0,2)).
+fof(hintname2, hint,_, _, proposition_01(0,?,?)).
+fof(hintname3, hint, _, _, defncollinear(0,2,?)).
+
+
