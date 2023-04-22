@@ -40,6 +40,20 @@ void SMT_ProvingEngine::SetTimeLimit(unsigned timeLimit) {
 
 // ---------------------------------------------------------------------------------------
 
+void SMT_ProvingEngine::Clear() {
+  PREDICATE.clear();
+  CONSTANTS.clear();
+
+  mPremises.clear();
+  mnMaxArity = 0;
+  mnMaxNumberOfPremisesInAxioms = 0;
+  mnNumberOfAssumptions = 0;
+  mProofPremises = True();
+  mBlockingAbducts = True();
+}
+
+// ---------------------------------------------------------------------------------------
+
 Expression SMT_ProvingEngine::CorrectnessConstraint()
 {
     Expression c;
@@ -730,6 +744,17 @@ void SMT_ProvingEngine::AddPremise(const Fact &f) {
   mnNumberOfAssumptions++;
 }
 
+// ---------------------------------------------------------------------------------------
+
+void SMT_ProvingEngine::AddAbduct() {
+  Expression c;
+  c = (StepKind(mnNumberOfAssumptions) == Assumption())
+    & (Nesting(mnNumberOfAssumptions) == 1u)
+    & (Cases(mnNumberOfAssumptions) == False())
+    & (AxiomApplied(mnNumberOfAssumptions) == Assumption());
+  mProofPremises &= c % ("Abduct" + itos(mnNumberOfAssumptions) + ":");
+  mnNumberOfAssumptions++;
+}
 
 // ---------------------------------------------------------------------------------------
 
@@ -739,27 +764,28 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
   string ordinal = get<2>(hint);
   Fact justification = get<3>(hint);
   Expression Hints;
-  int arg, i, AxiomUsed = -1;
+  int i, AxiomUsed = -1;
 
   if (justification.GetName() != "_") {
-    string arg0 = stoi(justification.GetArg(0), i)
-               ? itos(i)
-               : justification.GetArg(0) + hintName;
-    string arg1 = stoi(justification.GetArg(1), i)
-               ? itos(i)
-               : justification.GetArg(1) + hintName;
+    Expression arg0 = stoi(justification.GetArg(0), i)
+               ? Expression((unsigned)i)
+               : Expression(justification.GetArg(0));
+    Expression arg1 = stoi(justification.GetArg(1), i)
+               ? Expression((unsigned)i)
+               : Expression(justification.GetArg(1));
 
     if (justification.GetName() == "leq" && justification.GetArity() == 2) {
-      Hints &= Expression(arg1) >= Expression(arg0);
-    }
-    if (justification.GetName() == "less" && justification.GetArity() == 2) {
-      Hints &= Expression(arg0) < Expression(arg1);
-    }
-    for (size_t i = 0; i < mpT->mCLaxioms.size(); i++)
-      if (mpT->mCLaxioms[i].second == justification.GetName()) {
-        AxiomUsed = i;
-        break;
+      Hints &= (arg1 >= arg0);
+    } else if (justification.GetName() == "less" && justification.GetArity() == 2) {
+      Hints &= (arg0 < arg1);
+    } else {
+      for (size_t i = 0; i < mpT->mCLaxioms.size(); i++) {
+        if (mpT->mCLaxioms[i].second == justification.GetName()) {
+          AxiomUsed = i;
+          break;
+        }
       }
+    }
   }
 
   assert(hintFormula.GetNumOfUnivVars() == 0 &&
@@ -769,7 +795,7 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
     return Hints;
   if (hintFormula.GetGoal().GetElement(0).GetSize() > 1)
     return Hints;
-  stringstream s;
+  //stringstream s;
 
   int proofStep;
   unsigned from, to;
@@ -790,16 +816,18 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
     oneStep &= (StepKind(proofStep) == MP());
     if (AxiomUsed != -1) {
       oneStep &= (AxiomApplied(proofStep) == (unsigned)AxiomUsed);
-    for (size_t i = 0; i < justification.GetArity(); i++) {
-      if (justification.GetArg(i) == "?" || justification.GetArg(i) == "_")
-        continue;
-      if (stoi(justification.GetArg(i),arg)) // if it is a number, it is one of the intro vars
-        oneStep &= (Instantiation(proofStep, i) == (unsigned)arg);
-      else // otherwise, we bind it to a new variable
-        oneStep &= (Instantiation(proofStep, i) == string("nHintVarInst" + hintName + justification.GetArg(i)));
+      for (size_t i = 0; i < justification.GetArity(); i++) {
+        int ii;
+        if (justification.GetArg(i) != "?" && justification.GetArg(i) != "_") {
+          if (stoi(justification.GetArg(i),ii))
+            oneStep &= (Instantiation(proofStep, i) == (unsigned)ii);
+          else
+            oneStep &= (Instantiation(proofStep, i) == justification.GetArg(i));
+        }
       }
-    } else {
-      oneStep &= (IsQEDStep(proofStep) == False()); /* ? */
+      // else {
+      //  oneStep &= (IsQEDStep(proofStep) == False()); /* ? */
+      // }
     }
 
     if (hintFormula.GetGoal().GetElement(0).GetElement(0).GetName() != "_") {
@@ -809,23 +837,58 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
         Fact f = hintFormula.GetGoal().GetElement(j).GetElement(0);
         oneStep &= (ContentsPredicate(proofStep,j) == ToUpper(f.GetName()));
         for (size_t i = 0; i < f.GetArity(); i++) {
-          if (f.GetArg(i) == "?" || f.GetArg(i) == "_")
-            continue;
-          if (stoi(f.GetArg(i), arg)) // if it is a number, it is one of the intro vars
-            oneStep &= (ContentsArgument(proofStep,j,i) == (unsigned)arg);
-          else // otherwise, we bind it to a new variable
-            oneStep &= (ContentsArgument(proofStep,j,i) == string("nHintVar" + hintName + ToUpper(f.GetArg(i))));
+          int ii;
+          if (f.GetArg(i) != "?" && f.GetArg(i) != "_") {
+            if (stoi(f.GetArg(i),ii))
+              oneStep &= (ContentsArgument(proofStep,j,i) == (unsigned)ii);
+            else
+              oneStep &= (ContentsArgument(proofStep,j,i) == f.GetArg(i));
+          }
         }
       }
     }
     oneOfSteps |= oneStep;
   }
 
-  Hints &= oneOfSteps;
+  if (justification.GetName() != "leq" && justification.GetName() != "less")
+    Hints &= oneOfSteps;
+
   stringstream ss;
   ss << "; Hint " << index << ":" << endl << "; " << hintFormula << "; proof step: " << ordinal <<
         "; justification: " << justification << endl << "; Encoded hint:";
   return Hints % ss.str();
+}
+
+// ---------------------------------------------------------------------------------------
+
+bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& proof, vector<vector<Fact>>& abducts) {
+  mBlockingAbducts = True();
+  if (mParams.number_of_abducts > 0) {
+    for (unsigned i = 0; i < abducts.size(); i++) {
+      Expression blocking;
+      for (unsigned j = 0; j < abducts[i].size(); j++) {
+        Fact af = abducts[i][j];
+        Expression c = (ContentsPredicate(mnNumberOfAssumptions - mParams.number_of_abducts + j, 0) == af.GetName());
+        for(unsigned int k = 0; k < af.GetArity(); k++)
+          c &= (ContentsArgument(mnNumberOfAssumptions - mParams.number_of_abducts + j, 0, k) == af.GetArg(k));
+        blocking |= (c == False());
+      }
+      mBlockingAbducts &= blocking;
+    }
+  }
+
+  bool b = ProveFromPremises(formula, proof);
+
+  if (b && mParams.number_of_abducts > 0) {
+    vector<Fact> a;
+    for(unsigned i = mPremises.size(); i < mPremises.size() + mParams.number_of_abducts; i++) {
+      a.push_back(proof.GetAssumption(i));
+    }
+    abducts.push_back(a);
+  }
+
+  Clear();
+  return b;
 }
 
 // ---------------------------------------------------------------------------------------
@@ -911,13 +974,6 @@ bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& pr
       cout << "Length of the shortest proof found: " << best << endl;
     }
   }
-
-  PREDICATE.clear();
-  CONSTANTS.clear();
-
-  mnMaxArity = 0;
-  mnMaxNumberOfPremisesInAxioms = 0;
-  mnNumberOfAssumptions = 0;
   return ret;
 }
 
@@ -1114,7 +1170,7 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
 
     AddComment("");
     AddComment("***************************** Premises ********************************");
-    for(unsigned i=0; i < mnNumberOfAssumptions; i++) {
+    for(unsigned i=0; i < mnNumberOfAssumptions - mParams.number_of_abducts; i++) {
       stringstream ss;
       ss << i << ". " << mPremises[i];
       AddComment(ss.str());
@@ -1124,6 +1180,30 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
     AddComment("************************** Premises encoded ***************************");
     if (mnNumberOfAssumptions > 0)
       Assert(mProofPremises);
+
+    AddComment("************************** Hints variables ***************************");
+    set<string> hintVars;
+    for (size_t i = 0; i < mpHints->size(); i++) {
+        tHint hint = mpHints->at(i);
+        Fact hintFact = get<0>(hint).GetGoal().GetElement(0).GetElement(0);
+        string ordinal = get<2>(hint);
+        Fact justification = get<3>(hint);
+
+        for(unsigned i = 0; i<hintFact.GetArity(); i++) {
+          if (isIdentifier(hintFact.GetArg(i)) && hintVars.find(hintFact.GetArg(i)) == hintVars.end()) {
+            DeclareVarBasicType(hintFact.GetArg(i), 1000);
+            hintVars.insert(hintFact.GetArg(i));
+          }
+        }
+        if (isIdentifier(ordinal))
+          DeclareVarBasicType(ordinal, 1000);
+        for(unsigned i = 0; i<justification.GetArity(); i++) {
+          if (isIdentifier(justification.GetArg(i)) && hintVars.find(justification.GetArg(i)) == hintVars.end()) {
+            DeclareVarBasicType(justification.GetArg(i), 1000);
+            hintVars.insert(justification.GetArg(i));
+          }
+        }
+    }
 
     AddComment("");
     AddComment("******************************* Hints ********************************");
@@ -1246,6 +1326,11 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
 
   AddComment("********************* Proof correctness constraint ******************");
   Assert(CorrectnessConstraint());
+
+  if (mParams.number_of_abducts > 0) {
+    AddComment("************************ Bloking given abducts **********************");
+    Assert(mBlockingAbducts);
+  }
 
 /*  if (mSMT_theory == eSMTUFLIA_ProvingEngine ||
       mSMT_theory == eSMTUFBV_ProvingEngine) {
@@ -1458,7 +1543,8 @@ bool SMT_ProvingEngine::ReconstructSubproof(const DNFFormula &formula,
           f.SetName(msPredicates[nPredicate]);
           for (size_t i = 0; i < mpT->GetSymbolArity(msPredicates[nPredicate]); i++)
             f.SetArg(i, mpT->GetConstantName(meProof[step].ContentsArgument[0][i]));
-          // proof.AddAssumption(f); // already added while reading theorem
+
+          proof.AddAssumption(f); // store both assumptions and abducts
           proofTrace.push_back(f);
 
         } else if (nStepKind == eFirstCase) {
@@ -1506,7 +1592,7 @@ bool SMT_ProvingEngine::ReconstructSubproof(const DNFFormula &formula,
           proofTrace.push_back(dummy);
           return true;
 
-        } else  if (nStepKind == eMP) {
+        } else if (nStepKind == eMP) {
 
           if (nBranching) {
             nPredicate1 = meProof[step].ContentsPredicate[1];
