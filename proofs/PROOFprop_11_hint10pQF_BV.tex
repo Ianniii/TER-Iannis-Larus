@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage{argoclp}
+\usepackage{tikz}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Proof of theorem ,,proposition\_11``}
+\author{CLprover}
+\maketitle
+
+\noindent 
+{\bfseries Axioms:} 
+\begin{enumerate}
+\item lemma\_betweennotequal : $\forall A \; \forall B \; \forall C \; ( betS(A, B, C) \Rightarrow B \neq C\wedge A \neq B\wedge A \neq C\;)$
+\item lemma\_extension : $\forall A \; \forall B \; \forall P \; \forall Q \; ( A \neq B\wedge P \neq Q \Rightarrow \exists X \; (betS(A, B, X)\wedge cong(B, X, P, Q))\;)$
+\item proposition\_01 : $\forall A \; \forall B \; ( A \neq B \Rightarrow \exists X \; (equilateral(A, B, X)\wedge triangle(A, B, X))\;)$
+\item defequilateral : $\forall A \; \forall B \; \forall C \; ( equilateral(A, B, C) \Rightarrow cong(A, B, B, C)\wedge cong(B, C, C, A)\;)$
+\item defequilateral2 : $\forall A \; \forall B \; \forall C \; ( cong(A, B, B, C)\wedge cong(B, C, C, A) \Rightarrow equilateral(A, B, C)\;)$
+\item lemma\_doublereverse : $\forall A \; \forall B \; \forall C \; \forall D \; ( cong(A, B, C, D) \Rightarrow cong(D, C, B, A)\wedge cong(B, A, D, C)\;)$
+\item lemma\_congruenceflip : $\forall A \; \forall B \; \forall C \; \forall D \; ( cong(A, B, C, D) \Rightarrow cong(B, A, D, C)\wedge cong(B, A, C, D)\wedge cong(A, B, D, C)\;)$
+\item defncollinear : $\forall A \; \forall B \; \forall C \; ( \neg col(A, B, C) \Rightarrow A \neq B\wedge A \neq C\wedge B \neq C\;)$
+\item defcollinear : $\forall A \; \forall B \; \forall C \; ( col(A, B, C) \Rightarrow A = B\vee A = C\vee B = C\vee betS(B, A, C)\vee betS(A, B, C)\vee betS(A, C, B)\;)$
+\item defcollinear2a : $\forall A \; \forall B \; \forall C \; ( A = B \Rightarrow col(A, B, C)\;)$
+\item defcollinear2b : $\forall A \; \forall B \; \forall C \; ( A = C \Rightarrow col(A, B, C)\;)$
+\item defcollinear2c : $\forall A \; \forall B \; \forall C \; ( B = C \Rightarrow col(A, B, C)\;)$
+\item defcollinear2d : $\forall A \; \forall B \; \forall C \; ( betS(B, A, C) \Rightarrow col(A, B, C)\;)$
+\item defcollinear2e : $\forall A \; \forall B \; \forall C \; ( betS(A, B, C) \Rightarrow col(A, B, C)\;)$
+\item defcollinear2f : $\forall A \; \forall B \; \forall C \; ( betS(A, C, B) \Rightarrow col(A, B, C)\;)$
+\item defcollinear2g : $\forall A \; \forall B \; \forall C \; \forall D \; ( betS(A, D, B)\wedge triangle(A, B, C) \Rightarrow \neg col(A, D, C)\wedge \neg col(B, D, C)\;)$
+\item lemma\_collinearorder : $\forall A \; \forall B \; \forall C \; ( col(A, B, C) \Rightarrow col(B, A, C)\wedge col(B, C, A)\wedge col(C, A, B)\wedge col(A, C, B)\wedge col(C, B, A)\;)$
+\item deftriangle : $\forall A \; \forall B \; \forall C \; ( triangle(A, B, C) \Rightarrow \neg col(A, B, C)\;)$
+\item deftriangle2 : $\forall A \; \forall B \; \forall C \; ( \neg col(A, B, C) \Rightarrow triangle(A, B, C)\;)$
+\item deftriangle3 : $\forall A \; \forall B \; \forall C \; ( triangle(A, B, C) \Rightarrow triangle(A, C, B)\wedge triangle(B, A, C)\wedge triangle(C, B, A)\wedge triangle(B, C, A)\wedge triangle(C, A, B)\;)$
+\item defrightangle : $\forall A \; \forall B \; \forall C \; ( per(A, B, C) \Rightarrow \exists X \; (betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C)\;)$
+\item defrightangle2 : $\forall A \; \forall B \; \forall C \; \forall X \; ( betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow per(A, B, C)\;)$
+\end{enumerate}
+
+\hrulefill
+
+\noindent 
+{\bfseries Derived lemmas:} 
+\begin{enumerate}
+\item lemma\_extensionAuxConjDisj0sat0 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow A \neq X)$
+\item defrightangleAuxConjDisj0sat1 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow A \neq X)$
+\item lemma\_extensionAuxConjDisj0sat2 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow A \neq B)$
+\item defrightangleAuxConjDisj0sat3 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow A \neq B)$
+\item lemma\_extensionAuxConjDisj0sat4 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow B \neq X)$
+\item defrightangleAuxConjDisj0sat5 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow B \neq X)$
+\item proposition\_01AuxConjDisj0sat6 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(B, X, X, A))$
+\item proposition\_01AuxConjDisj0sat7 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(A, B, B, X))$
+\item lemma\_extensionAuxConjDisj1sat8 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(X, B, Q, P))$
+\item defequilateralAuxConjConcl2sat9 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(C, B, A, C))$
+\item defequilateralAuxConjConcl0sat10 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(B, A, C, B))$
+\item lemma\_doublereverseAuxConjConcl0sat11 : $\forall A\;\forall B\;\forall C\;\forall D\;cong(A, B, C, D) \Rightarrow cong(C, D, A, B))$
+\item defrightangleAuxConjDisj2sat12 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(C, A, C, X))$
+\item defrightangleAuxConjDisj1sat13 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(B, A, B, X))$
+\item proposition\_01AuxConjDisj0sat6sat14 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(X, B, A, X))$
+\item proposition\_01AuxConjDisj0sat7sat15 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(B, A, X, B))$
+\item lemma\_extensionAuxConjDisj1sat16 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(Q, P, X, B))$
+\item defequilateralAuxConjConcl2sat17 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(A, C, C, B))$
+\item defequilateralAuxConjConcl0sat18 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(C, B, B, A))$
+\item lemma\_congruenceflipAuxConjConcl4sat19 : $\forall A\;\forall B\;\forall C\;\forall D\;cong(A, B, C, D) \Rightarrow cong(C, D, B, A))$
+\item lemma\_congruenceflipAuxConjConcl2sat20 : $\forall A\;\forall B\;\forall C\;\forall D\;cong(A, B, C, D) \Rightarrow cong(D, C, A, B))$
+\item defrightangleAuxConjDisj2sat21 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(C, X, C, A))$
+\item defrightangleAuxConjDisj1sat22 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(B, X, B, A))$
+\item proposition\_01AuxConjDisj0sat6sat23 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(A, X, X, B))$
+\item proposition\_01AuxConjDisj0sat7sat24 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(X, B, B, A))$
+\item lemma\_extensionAuxConjDisj1sat8sat25 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(P, Q, B, X))$
+\item defequilateralAuxConjConcl2sat9sat26 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(C, A, B, C))$
+\item defequilateralAuxConjConcl0sat10sat27 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(B, C, A, B))$
+\item defrightangleAuxConjDisj2sat12sat28 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(X, C, A, C))$
+\item defrightangleAuxConjDisj1sat13sat29 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(X, B, A, B))$
+\item proposition\_01AuxConjDisj0sat6sat14sat30 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(X, A, B, X))$
+\item proposition\_01AuxConjDisj0sat7sat15sat31 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(B, X, A, B))$
+\item lemma\_extensionAuxConjDisj1sat32 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(B, X, Q, P))$
+\item defequilateralAuxConjConcl2sat33 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(B, C, A, C))$
+\item defequilateralAuxConjConcl0sat34 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(A, B, C, B))$
+\item defrightangleAuxConjDisj2sat35 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(A, C, C, X))$
+\item defrightangleAuxConjDisj1sat36 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(A, B, B, X))$
+\item proposition\_01AuxConjDisj0sat6sat37 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(B, X, A, X))$
+\item proposition\_01AuxConjDisj0sat7sat38 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(A, B, X, B))$
+\item lemma\_extensionAuxConjDisj1sat8sat39 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(X, B, P, Q))$
+\item defequilateralAuxConjConcl2sat9sat40 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(C, B, C, A))$
+\item defequilateralAuxConjConcl0sat10sat41 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(B, A, B, C))$
+\item defrightangleAuxConjDisj2sat12sat42 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(C, A, X, C))$
+\item defrightangleAuxConjDisj1sat13sat43 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(B, A, X, B))$
+\item proposition\_01AuxConjDisj0sat6sat14sat44 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(X, B, X, A))$
+\item proposition\_01AuxConjDisj0sat7sat15sat45 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(B, A, B, X))$
+\item lemma\_extensionAuxConjDisj1sat16sat46 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(Q, P, B, X))$
+\item defequilateralAuxConjConcl2sat17sat47 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(A, C, B, C))$
+\item defequilateralAuxConjConcl0sat18sat48 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(C, B, A, B))$
+\item defrightangleAuxConjDisj2sat21sat49 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(C, X, A, C))$
+\item defrightangleAuxConjDisj1sat22sat50 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(B, X, A, B))$
+\item proposition\_01AuxConjDisj0sat6sat23sat51 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(A, X, B, X))$
+\item proposition\_01AuxConjDisj0sat7sat24sat52 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(X, B, A, B))$
+\item lemma\_extensionAuxConjDisj1sat8sat25sat53 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow cong(P, Q, X, B))$
+\item defequilateralAuxConjConcl2sat9sat26sat54 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(C, A, C, B))$
+\item defequilateralAuxConjConcl0sat10sat27sat55 : $\forall A\;\forall B\;\forall C\;equilateral(A, B, C) \Rightarrow cong(B, C, B, A))$
+\item defrightangleAuxConjDisj2sat12sat28sat56 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(X, C, C, A))$
+\item defrightangleAuxConjDisj1sat13sat29sat57 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow cong(X, B, B, A))$
+\item proposition\_01AuxConjDisj0sat6sat14sat30sat58 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(X, A, X, B))$
+\item proposition\_01AuxConjDisj0sat7sat15sat31sat59 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow cong(B, X, B, A))$
+\item deftrianglesat60 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow B \neq C)$
+\item deftrianglesat61 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow A \neq C)$
+\item deftrianglesat62 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow A \neq B)$
+\item eq\_reflsat63 : $\forall A\;\forall C\;col(A, A, C))$
+\item eq\_symsat64 : $\forall A\;\forall B\;\forall C\;A = B \Rightarrow col(B, A, C))$
+\item eq\_reflsat65 : $\forall A\;\forall B\;col(A, B, A))$
+\item eq\_symsat66 : $\forall A\;\forall B\;A = B \Rightarrow col(B, B, A))$
+\item eq\_reflsat67 : $\forall A\;col(A, A, A))$
+\item eq\_symsat68 : $\forall A\;\forall B\;A = B \Rightarrow col(A, B, A))$
+\item lemma\_extensionAuxConjDisj0sat69 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(B, A, X))$
+\item defrightangleAuxConjDisj0sat70 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow col(B, A, X))$
+\item lemma\_extensionAuxConjDisj0sat71 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(A, B, X))$
+\item defrightangleAuxConjDisj0sat72 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow col(A, B, X))$
+\item lemma\_extensionAuxConjDisj0sat73 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(A, X, B))$
+\item defrightangleAuxConjDisj0sat74 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow col(A, X, B))$
+\item defcollinear2dsat75 : $\forall A\;\forall B\;\forall C\;betS(B, A, C) \Rightarrow col(C, B, A))$
+\item defcollinear2esat76 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow col(C, B, A))$
+\item defcollinear2fsat77 : $\forall A\;\forall B\;\forall C\;betS(A, C, B) \Rightarrow col(C, B, A))$
+\item eq\_symsat66sat78 : $\forall A\;\forall B\;A = B \Rightarrow col(A, B, B))$
+\item lemma\_extensionAuxConjDisj0sat69sat79 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(X, A, B))$
+\item defrightangleAuxConjDisj0sat70sat80 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow col(X, A, B))$
+\item lemma\_extensionAuxConjDisj0sat71sat81 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(X, B, A))$
+\item defrightangleAuxConjDisj0sat72sat82 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow col(X, B, A))$
+\item lemma\_extensionAuxConjDisj0sat73sat83 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(B, X, A))$
+\item defrightangleAuxConjDisj0sat74sat84 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow col(B, X, A))$
+\item eq\_symsat66sat85 : $\forall A\;\forall B\;A = B \Rightarrow col(B, A, B))$
+\item eq\_symsat68sat86 : $\forall A\;\forall B\;A = B \Rightarrow col(A, A, B))$
+\item eq\_symsat68sat86sat87 : $\forall A\;\forall B\;A = B \Rightarrow col(B, A, A))$
+\item proposition\_01AuxConjDisj1sat88 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow \neg col(A, B, X))$
+\item deftriangle3AuxConjConcl8sat89 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow \neg col(C, A, B))$
+\item deftriangle3AuxConjConcl6sat90 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow \neg col(B, C, A))$
+\item deftriangle3AuxConjConcl4sat91 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow \neg col(C, B, A))$
+\item deftriangle3AuxConjConcl2sat92 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow \neg col(B, A, C))$
+\item deftriangle3AuxConjConcl0sat93 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow \neg col(A, C, B))$
+\item proposition\_01AuxConjDisj1sat94 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow triangle(X, A, B))$
+\item deftriangle2sat95 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow triangle(C, A, B))$
+\item proposition\_01AuxConjDisj1sat94sat96 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow triangle(B, X, A))$
+\item deftriangle2sat95sat97 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow triangle(B, C, A))$
+\item proposition\_01AuxConjDisj1sat98 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow triangle(X, B, A))$
+\item deftriangle2sat99 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow triangle(C, B, A))$
+\item proposition\_01AuxConjDisj1sat94sat100 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow triangle(B, A, X))$
+\item deftriangle2sat95sat101 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow triangle(B, A, C))$
+\item proposition\_01AuxConjDisj1sat94sat96sat102 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow triangle(A, X, B))$
+\item deftriangle2sat95sat97sat103 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow triangle(A, C, B))$
+\item lemma\_betweennotequalAuxConjConcl4sat104 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow C \neq A)$
+\item lemma\_betweennotequalAuxConjConcl2sat105 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow B \neq A)$
+\item lemma\_betweennotequalAuxConjConcl0sat106 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow C \neq B)$
+\item defncollinearAuxConjConcl4sat107 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow C \neq B)$
+\item defncollinearAuxConjConcl2sat108 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow C \neq A)$
+\item defncollinearAuxConjConcl0sat109 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow B \neq A)$
+\item defrightangleAuxConjDisj3sat110 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow C \neq B)$
+\item lemma\_extensionAuxConjDisj0sat0sat111 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow X \neq A)$
+\item defrightangleAuxConjDisj0sat1sat112 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow X \neq A)$
+\item lemma\_extensionAuxConjDisj0sat2sat113 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow B \neq A)$
+\item defrightangleAuxConjDisj0sat3sat114 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow B \neq A)$
+\item lemma\_extensionAuxConjDisj0sat4sat115 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow X \neq B)$
+\item defrightangleAuxConjDisj0sat5sat116 : $\forall A\;\forall B\;\forall X\;\forall C\;betS(A, B, X)\wedge cong(A, B, X, B)\wedge cong(A, C, X, C)\wedge B \neq C \Rightarrow X \neq B)$
+\item deftrianglesat60sat117 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow C \neq B)$
+\item deftrianglesat61sat118 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow C \neq A)$
+\item deftrianglesat62sat119 : $\forall A\;\forall B\;\forall C\;triangle(A, B, C) \Rightarrow B \neq A)$
+\item proposition\_01AuxConjDisj1sat120 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow B \neq X)$
+\item proposition\_01AuxConjDisj1sat94sat121 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow A \neq B)$
+\item proposition\_01AuxConjDisj1sat94sat96sat122 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow X \neq A)$
+\item proposition\_01AuxConjDisj1sat98sat123 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow B \neq A)$
+\item proposition\_01AuxConjDisj1sat94sat100sat124 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow A \neq X)$
+\item proposition\_01AuxConjDisj1sat94sat96sat102sat125 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow X \neq B)$
+\item proposition\_01AuxConjDisj1sat126 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow \neg col(X, A, B))$
+\item deftriangle2sat127 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow \neg col(C, A, B))$
+\item proposition\_01AuxConjDisj1sat94sat128 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow \neg col(B, X, A))$
+\item deftriangle2sat95sat129 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow \neg col(B, C, A))$
+\item proposition\_01AuxConjDisj1sat98sat130 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow \neg col(A, X, B))$
+\item deftriangle2sat99sat131 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow \neg col(A, C, B))$
+\item proposition\_01AuxConjDisj1sat94sat100sat132 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow \neg col(X, B, A))$
+\item deftriangle2sat95sat101sat133 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow \neg col(C, B, A))$
+\item proposition\_01AuxConjDisj1sat94sat96sat102sat134 : $\forall A\;\forall B\;\forall X\;equilateral(A, B, X)\wedge triangle(A, B, X) \Rightarrow \neg col(B, A, X))$
+\item deftriangle2sat95sat97sat103sat135 : $\forall A\;\forall B\;\forall C\;\neg col(A, B, C) \Rightarrow \neg col(B, A, C))$
+\end{enumerate}
+
+\hrulefill
+
+\begin{theorem}
+proposition\_11 : $\forall A \; \forall B \; \forall C \; ( betS(A, C, B) \Rightarrow \exists X \; (per(A, C, X))\;)$
+\end{theorem}
+
+\newcounter{proofstepnum}
+\setcounter{proofstepnum}{0}
+
+\noindent{\em Proof:}
+\vspace{5pt}
+
+\noindent Consider arbitrary $a$, $b$, $c$ such that: \begin{itemize} 
+
+\item  $betS(a, c, b)$. 
+\end{itemize} 
+It should be proved that $\exists X\; \; per(a, c, X)$.
+\vspace{5pt}
+
+\proofstep{0}{Let $w$ be such that $betS(a, c, w)\wedge cong(c, w, a, c)$ ({\scriptsize by MP, from $betS(a, c, b)$, $betS(a, c, b)$ using axiom lemma\_extension; instantiation:  $A$ $\mapsto$  $a$,  $B$ $\mapsto$  $c$,  $P$ $\mapsto$  $a$,  $Q$ $\mapsto$  $c$}) }
+\proofstep{0}{Let $w1$ be such that $equilateral(a, w, w1)\wedge triangle(a, w, w1)$ ({\scriptsize by MP, from $betS(a, c, w)\wedge cong(c, w, a, c)$ using axiom proposition\_01; instantiation:  $A$ $\mapsto$  $a$,  $B$ $\mapsto$  $w$}) }
+\proofstep{0}{$\neg col(a, c, w1)$ ({\scriptsize by MP, from $betS(a, c, w)\wedge cong(c, w, a, c)$, $equilateral(a, w, w1)\wedge triangle(a, w, w1)$ using axiom defcollinear2g; instantiation:  $A$ $\mapsto$  $a$,  $B$ $\mapsto$  $w$,  $C$ $\mapsto$  $w1$,  $D$ $\mapsto$  $c$}) }
+\proofstep{0}{$per(a, c, w1)$ ({\scriptsize by MP, from $betS(a, c, w)\wedge cong(c, w, a, c)$, $betS(a, c, w)\wedge cong(c, w, a, c)$, $equilateral(a, w, w1)\wedge triangle(a, w, w1)$, $\neg col(a, c, w1)$ using axiom defrightangle2; instantiation:  $A$ $\mapsto$  $a$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $w1$,  $X$ $\mapsto$  $w$}) }
+\proofstep{0}{Proved by assumption! ({\scriptsize by QEDas})}
+
+\vspace{5pt}
+\noindent
+
+% \input{PROOFprop_11_hint10pQF_BV_illustration.tkz}
+
+\end{document}

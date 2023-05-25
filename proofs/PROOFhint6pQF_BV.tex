@@ -1,0 +1,139 @@
+\documentclass{article}
+\usepackage{argoclp}
+\usepackage{tikz}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Proof of theorem ,,lemma\_twoperpsparallel``}
+\author{CLprover}
+\maketitle
+
+\noindent 
+{\bfseries Axioms:} 
+\begin{enumerate}
+\item lemma\_rightangleNC : $\forall A \; \forall B \; \forall C \; ( per(A, B, C) \Rightarrow \neg col(A, B, C)\;)$
+\item lemma\_NCdistinct : $\forall A \; \forall B \; \forall C \; ( \neg col(A, B, C) \Rightarrow A \neq B\wedge B \neq C\wedge A \neq C\wedge B \neq A\wedge C \neq B\wedge C \neq A\;)$
+\item lemma\_extension : $\forall A \; \forall B \; \forall P \; \forall Q \; ( A \neq B\wedge P \neq Q \Rightarrow \exists X \; (betS(A, B, X)\wedge cong(B, X, P, Q))\;)$
+\item defcollinear : $\forall A \; \forall B \; \forall C \; ( col(A, B, C) \Rightarrow A = B\vee A = C\vee B = C\vee betS(B, A, C)\vee betS(A, B, C)\vee betS(A, C, B)\;)$
+\item defcollinear2a : $\forall A \; \forall B \; \forall C \; ( A = B \Rightarrow col(A, B, C)\;)$
+\item defcollinear2b : $\forall A \; \forall B \; \forall C \; ( A = C \Rightarrow col(A, B, C)\;)$
+\item defcollinear2c : $\forall A \; \forall B \; \forall C \; ( B = C \Rightarrow col(A, B, C)\;)$
+\item defcollinear2d : $\forall A \; \forall B \; \forall C \; ( betS(B, A, C) \Rightarrow col(A, B, C)\;)$
+\item defcollinear2e : $\forall A \; \forall B \; \forall C \; ( betS(A, B, C) \Rightarrow col(A, B, C)\;)$
+\item defcollinear2f : $\forall A \; \forall B \; \forall C \; ( betS(A, C, B) \Rightarrow col(A, B, C)\;)$
+\item lemma\_betweennotequal : $\forall A \; \forall B \; \forall C \; ( betS(A, B, C) \Rightarrow B \neq C\wedge A \neq B\wedge A \neq C\;)$
+\item lemma\_inequalitysymmetric : $\forall A \; \forall B \; ( A \neq B \Rightarrow B \neq A\;)$
+\item lemma\_collinearright : $\forall A \; \forall B \; \forall C \; \forall D \; ( per(A, B, D)\wedge col(A, B, C)\wedge C \neq B \Rightarrow per(C, B, D)\;)$
+\item lemma\_8\_2 : $\forall A \; \forall B \; \forall C \; ( per(A, B, C) \Rightarrow per(C, B, A)\;)$
+\item lemma\_ray4\_1 : $\forall A \; \forall B \; \forall E \; ( betS(A, E, B)\wedge A \neq B \Rightarrow out(A, B, E)\;)$
+\item lemma\_ray4\_2 : $\forall A \; \forall B \; \forall E \; ( E = B\wedge A \neq B \Rightarrow out(A, B, E)\;)$
+\item lemma\_ray4\_3 : $\forall A \; \forall B \; \forall E \; ( betS(A, B, E)\wedge A \neq B \Rightarrow out(A, B, E)\;)$
+\item defsupplement : $\forall A \; \forall B \; \forall C \; \forall D \; \forall F \; ( supp(A, B, C, D, F) \Rightarrow out(B, C, D)\wedge betS(A, B, F)\;)$
+\item defsupplement2 : $\forall A \; \forall B \; \forall C \; \forall D \; \forall F \; ( out(B, C, D)\wedge betS(A, B, F) \Rightarrow supp(A, B, C, D, F)\;)$
+\item lemma\_Euclid4 : $\forall A \; \forall B \; \forall C \; \forall Xa \; \forall Xb \; \forall Xc \; ( per(A, B, C)\wedge per(Xa, Xb, Xc) \Rightarrow congA(A, B, C, Xa, Xb, Xc)\;)$
+\item deftworightangles : $\forall A \; \forall B \; \forall C \; \forall D \; \forall E \; \forall F \; ( rT(A, B, C, D, E, F) \Rightarrow \exists X \; \exists Y \; \exists Z \; \exists U \; \exists V \; (supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z))\;)$
+\item deftworightangles2 : $\forall A \; \forall B \; \forall C \; \forall D \; \forall E \; \forall F \; \forall X \; \forall Y \; \forall Z \; \forall U \; \forall V \; ( supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow rT(A, B, C, D, E, F)\;)$
+\item proposition\_28C : $\forall B \; \forall D \; \forall G \; \forall H \; ( rT(B, G, H, G, H, D)\wedge oS(B, D, G, H) \Rightarrow par(G, B, H, D)\;)$
+\item lemma\_parallelsymmetric : $\forall A \; \forall B \; \forall C \; \forall D \; ( par(A, B, C, D) \Rightarrow par(C, D, A, B)\;)$
+\item lemma\_parallelflip : $\forall A \; \forall B \; \forall C \; \forall D \; ( par(A, B, C, D) \Rightarrow par(B, A, C, D)\wedge par(A, B, D, C)\wedge par(B, A, D, C)\;)$
+\end{enumerate}
+
+\hrulefill
+
+\noindent 
+{\bfseries Derived lemmas:} 
+\begin{enumerate}
+\item lemma\_8\_2sat0 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow \neg col(C, B, A))$
+\item lemma\_rightangleNCsat1 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow C \neq A)$
+\item lemma\_8\_2sat0sat2 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow A \neq C)$
+\item lemma\_rightangleNCsat3 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow C \neq B)$
+\item lemma\_8\_2sat0sat4 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow A \neq B)$
+\item lemma\_rightangleNCsat5 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow B \neq A)$
+\item lemma\_8\_2sat0sat6 : $\forall A\;\forall B\;\forall C\;per(A, B, C) \Rightarrow B \neq C)$
+\item eq\_reflsat7 : $\forall A\;\forall C\;col(A, A, C))$
+\item eq\_symsat8 : $\forall A\;\forall B\;\forall C\;A = B \Rightarrow col(B, A, C))$
+\item eq\_reflsat9 : $\forall A\;\forall B\;col(A, B, A))$
+\item eq\_symsat10 : $\forall A\;\forall B\;A = B \Rightarrow col(B, B, A))$
+\item eq\_reflsat11 : $\forall A\;col(A, A, A))$
+\item eq\_symsat12 : $\forall A\;\forall B\;A = B \Rightarrow col(A, B, A))$
+\item lemma\_extensionAuxConjDisj0sat13 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(B, A, X))$
+\item defsupplementAuxConjConcl2sat14 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow col(B, A, F))$
+\item lemma\_extensionAuxConjDisj0sat15 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(A, B, X))$
+\item defsupplementAuxConjConcl2sat16 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow col(A, B, F))$
+\item lemma\_extensionAuxConjDisj0sat17 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow col(A, X, B))$
+\item defsupplementAuxConjConcl2sat18 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow col(A, F, B))$
+\item lemma\_extensionAuxConjDisj0sat19 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow A \neq X)$
+\item defsupplementAuxConjConcl2sat20 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow A \neq F)$
+\item lemma\_extensionAuxConjDisj0sat21 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow A \neq B)$
+\item defsupplementAuxConjConcl2sat22 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow A \neq B)$
+\item lemma\_extensionAuxConjDisj0sat23 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow B \neq X)$
+\item defsupplementAuxConjConcl2sat24 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow B \neq F)$
+\item lemma\_betweennotequalAuxConjConcl4sat25 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow C \neq A)$
+\item lemma\_betweennotequalAuxConjConcl2sat26 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow B \neq A)$
+\item lemma\_betweennotequalAuxConjConcl0sat27 : $\forall A\;\forall B\;\forall C\;betS(A, B, C) \Rightarrow C \neq B)$
+\item lemma\_extensionAuxConjDisj0sat19sat28 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow X \neq A)$
+\item defsupplementAuxConjConcl2sat20sat29 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow F \neq A)$
+\item lemma\_extensionAuxConjDisj0sat21sat30 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow B \neq A)$
+\item defsupplementAuxConjConcl2sat22sat31 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow B \neq A)$
+\item lemma\_extensionAuxConjDisj0sat23sat32 : $\forall A\;\forall B\;\forall X\;\forall P\;\forall Q\;betS(A, B, X)\wedge cong(B, X, P, Q) \Rightarrow X \neq B)$
+\item defsupplementAuxConjConcl2sat24sat33 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall F\;supp(A, B, C, D, F) \Rightarrow F \neq B)$
+\item deftworightanglesAuxConjDisj0sat34 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow betS(X, Y, Z))$
+\item deftworightanglesAuxConjDisj0sat35 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow out(Y, U, V))$
+\item lemma\_parallelflipAuxConjConcl4sat36 : $\forall A\;\forall B\;\forall C\;\forall D\;par(A, B, C, D) \Rightarrow par(D, C, B, A))$
+\item lemma\_parallelflipAuxConjConcl2sat37 : $\forall A\;\forall B\;\forall C\;\forall D\;par(A, B, C, D) \Rightarrow par(D, C, A, B))$
+\item lemma\_parallelflipAuxConjConcl0sat38 : $\forall A\;\forall B\;\forall C\;\forall D\;par(A, B, C, D) \Rightarrow par(C, D, B, A))$
+\item eq\_symsat39 : $\forall A\;\forall B\;A = B \Rightarrow col(A, A, B))$
+\item eq\_symsat40 : $\forall A\;\forall B\;A = B \Rightarrow col(B, A, B))$
+\item deftworightanglesAuxConjDisj0sat41 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow col(Y, X, Z))$
+\item deftworightanglesAuxConjDisj0sat42 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow col(X, Y, Z))$
+\item deftworightanglesAuxConjDisj0sat43 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow col(X, Z, Y))$
+\item deftworightanglesAuxConjDisj0sat44 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow X \neq Z)$
+\item deftworightanglesAuxConjDisj0sat45 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow X \neq Y)$
+\item deftworightanglesAuxConjDisj0sat46 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow Y \neq Z)$
+\item deftworightanglesAuxConjDisj0sat34sat47 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow Z \neq X)$
+\item deftworightanglesAuxConjDisj0sat34sat48 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow Y \neq X)$
+\item deftworightanglesAuxConjDisj0sat34sat49 : $\forall X\;\forall Y\;\forall U\;\forall V\;\forall Z\;\forall A\;\forall B\;\forall C\;\forall D\;\forall E\;\forall F\;supp(X, Y, U, V, Z)\wedge congA(A, B, C, X, Y, U)\wedge congA(D, E, F, V, Y, Z) \Rightarrow Z \neq Y)$
+\end{enumerate}
+
+\hrulefill
+
+\begin{theorem}
+lemma\_twoperpsparallel : $\forall A \; \forall B \; \forall C \; \forall D \; ( per(A, B, C)\wedge per(B, C, D)\wedge oS(A, D, B, C) \Rightarrow par(A, B, C, D)\;)$
+\end{theorem}
+
+\newcounter{proofstepnum}
+\setcounter{proofstepnum}{0}
+
+\noindent{\em Proof:}
+\vspace{5pt}
+
+\noindent Consider arbitrary $a$, $b$, $c$, $d$ such that: \begin{itemize} 
+
+\item  $per(a, b, c)$, 
+\item  $per(b, c, d)$, 
+\item  $oS(a, d, b, c)$. 
+\end{itemize} 
+It should be proved that $par(a, b, c, d)$.
+\vspace{5pt}
+
+\proofstep{0}{$\neg col(b, c, d)$ ({\scriptsize by MP, from $per(b, c, d)$ using axiom lemma\_rightangleNC; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $d$}) }
+\proofstep{0}{$out(c, d, d)$ ({\scriptsize by MP, from $per(b, c, d)$ using axiom lemma\_ray4\_2; instantiation:  $A$ $\mapsto$  $c$,  $B$ $\mapsto$  $d$,  $E$ $\mapsto$  $d$}) }
+\proofstep{0}{Let $w$ be such that $betS(b, c, w)\wedge cong(c, w, b, c)$ ({\scriptsize by MP, from $\neg col(b, c, d)$, $per(a, b, c)$ using axiom lemma\_extension; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $c$,  $P$ $\mapsto$  $b$,  $Q$ $\mapsto$  $c$}) }
+\proofstep{0}{$per(w, c, d)$ ({\scriptsize by MP, from $per(b, c, d)$, $betS(b, c, w)\wedge cong(c, w, b, c)$, $betS(b, c, w)\wedge cong(c, w, b, c)$ using axiom lemma\_collinearright; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $w$,  $D$ $\mapsto$  $d$}) }
+\proofstep{0}{$supp(b, c, d, d, w)$ ({\scriptsize by MP, from $out(c, d, d)$, $betS(b, c, w)\wedge cong(c, w, b, c)$ using axiom defsupplement2; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $d$,  $D$ $\mapsto$  $d$,  $F$ $\mapsto$  $w$}) }
+\proofstep{0}{$congA(a, b, c, b, c, d)$ ({\scriptsize by MP, from $per(a, b, c)$, $per(b, c, d)$ using axiom lemma\_Euclid4; instantiation:  $A$ $\mapsto$  $a$,  $B$ $\mapsto$  $b$,  $C$ $\mapsto$  $c$,  $Xa$ $\mapsto$  $b$,  $Xb$ $\mapsto$  $c$,  $Xc$ $\mapsto$  $d$}) }
+\proofstep{0}{$congA(b, c, d, d, c, w)$ ({\scriptsize by MP, from $per(b, c, d)$, $per(w, c, d)$ using axiom lemma\_Euclid4; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $d$,  $Xa$ $\mapsto$  $d$,  $Xb$ $\mapsto$  $c$,  $Xc$ $\mapsto$  $w$}) }
+\proofstep{0}{$rT(a, b, c, b, c, d)$ ({\scriptsize by MP, from $supp(b, c, d, d, w)$, $congA(a, b, c, b, c, d)$, $congA(b, c, d, d, c, w)$ using axiom deftworightangles2; instantiation:  $A$ $\mapsto$  $a$,  $B$ $\mapsto$  $b$,  $C$ $\mapsto$  $c$,  $D$ $\mapsto$  $b$,  $E$ $\mapsto$  $c$,  $F$ $\mapsto$  $d$,  $X$ $\mapsto$  $b$,  $Y$ $\mapsto$  $c$,  $Z$ $\mapsto$  $w$,  $U$ $\mapsto$  $d$,  $V$ $\mapsto$  $d$}) }
+\proofstep{0}{$par(b, a, c, d)$ ({\scriptsize by MP, from $rT(a, b, c, b, c, d)$, $oS(a, d, b, c)$ using axiom proposition\_28C; instantiation:  $B$ $\mapsto$  $a$,  $D$ $\mapsto$  $d$,  $G$ $\mapsto$  $b$,  $H$ $\mapsto$  $c$}) }
+\proofstep{0}{$par(c, d, a, b)$ ({\scriptsize by MP, from $par(b, a, c, d)$ using axiom lemma\_parallelflipAuxConjConcl0sat38; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $a$,  $C$ $\mapsto$  $c$,  $D$ $\mapsto$  $d$}) }
+\proofstep{0}{$par(a, b, c, d)$ ({\scriptsize by MP, from $par(c, d, a, b)$ using axiom lemma\_parallelsymmetric; instantiation:  $A$ $\mapsto$  $c$,  $B$ $\mapsto$  $d$,  $C$ $\mapsto$  $a$,  $D$ $\mapsto$  $b$}) }
+\proofstep{0}{Proved by assumption! ({\scriptsize by QEDas})}
+
+\vspace{5pt}
+\noindent
+
+% \input{PROOFhint6pQF_BV_illustration.tkz}
+
+\end{document}

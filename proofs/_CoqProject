@@ -1,0 +1,6 @@
+# Library name
+-R . src
+
+# Coq files (filled by the configure)
+./PROOFbasepQF_BV.v
+./general_tactics.v

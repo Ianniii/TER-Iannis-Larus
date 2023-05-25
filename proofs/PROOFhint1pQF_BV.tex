@@ -1,0 +1,475 @@
+\documentclass{article}
+\usepackage{argoclp}
+\usepackage{tikz}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Proof of theorem ,,proposition\_43``}
+\author{CLprover}
+\maketitle
+
+\noindent 
+{\bfseries Axioms:} 
+\begin{enumerate}
+\item lemma\_PGflip : $\forall A \; \forall B \; \forall C \; \forall D \; ( pG(A, B, C, D) \Rightarrow pG(B, A, D, C)\;)$
+\item proposition\_34 : $\forall A \; \forall B \; \forall C \; \forall D \; ( pG(A, C, D, B) \Rightarrow cong(A, B, C, D)\wedge cong(A, C, B, D)\wedge congA(C, A, B, B, D, C)\wedge congA(A, B, D, D, C, A)\wedge cong\_3(C, A, B, B, D, C)\;)$
+\item axiom\_congruentequal : $\forall A \; \forall B \; \forall C \; \forall Ca \; \forall Cb \; \forall Cc \; ( cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Ca, Cb, Cc)\;)$
+\item axiom\_ETpermutation : $\forall A \; \forall B \; \forall C \; \forall Ca \; \forall Cb \; \forall Cc \; ( eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Cb, Cc, Ca)\wedge eT(A, B, C, Ca, Cc, Cb)\wedge eT(A, B, C, Cb, Ca, Cc)\wedge eT(A, B, C, Cc, Cb, Ca)\wedge eT(A, B, C, Cc, Ca, Cb)\;)$
+\item axiom\_ETsymmetric : $\forall A \; \forall B \; \forall C \; \forall Ca \; \forall Cb \; \forall Cc \; ( eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, A, B, C)\;)$
+\item axiom\_cutoff1 : $\forall A \; \forall B \; \forall C \; \forall D \; \forall E \; \forall Ca \; \forall Cb \; \forall Cc \; \forall Cd \; \forall Ce \; ( betS(A, B, C)\wedge betS(Ca, Cb, Cc)\wedge betS(E, D, C)\wedge betS(Ce, Cd, Cc)\wedge eT(B, C, D, Cb, Cc, Cd)\wedge eT(A, C, E, Ca, Cc, Ce) \Rightarrow eF(A, B, D, E, Ca, Cb, Cd, Ce)\;)$
+\item axiom\_betweennesssymmetry : $\forall A \; \forall B \; \forall C \; ( betS(A, B, C) \Rightarrow betS(C, B, A)\;)$
+\item axiom\_EFpermutation : $\forall A \; \forall B \; \forall C \; \forall D \; \forall Ca \; \forall Cb \; \forall Cc \; \forall Cd \; ( eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, B, C, D, Cb, Cc, Cd, Ca)\wedge eF(A, B, C, D, Cd, Cc, Cb, Ca)\wedge eF(A, B, C, D, Cc, Cd, Ca, Cb)\wedge eF(A, B, C, D, Cb, Ca, Cd, Cc)\wedge eF(A, B, C, D, Cd, Ca, Cb, Cc)\wedge eF(A, B, C, D, Cc, Cb, Ca, Cd)\wedge eF(A, B, C, D, Ca, Cd, Cc, Cb)\;)$
+\item axiom\_EFsymmetric : $\forall A \; \forall B \; \forall C \; \forall D \; \forall Ca \; \forall Cb \; \forall Cc \; \forall Cd \; ( eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, A, B, C, D)\;)$
+\item axiom\_cutoff2 : $\forall A \; \forall B \; \forall C \; \forall D \; \forall E \; \forall Ca \; \forall Cb \; \forall Cc \; \forall Cd \; \forall Ce \; ( betS(B, C, D)\wedge betS(Cb, Cc, Cd)\wedge eT(C, D, E, Cc, Cd, Ce)\wedge eF(A, B, D, E, Ca, Cb, Cd, Ce) \Rightarrow eF(A, B, C, E, Ca, Cb, Cc, Ce)\;)$
+\end{enumerate}
+
+\hrulefill
+
+\noindent 
+{\bfseries Derived lemmas:} 
+\begin{enumerate}
+\item lemma\_PGflipsat0 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow cong\_3(A, B, C, C, D, A))$
+\item lemma\_PGflipsat1 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow congA(B, C, D, D, A, B))$
+\item lemma\_PGflipsat2 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow congA(A, B, C, C, D, A))$
+\item lemma\_PGflipsat3 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow cong(B, A, C, D))$
+\item lemma\_PGflipsat4 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow cong(B, C, A, D))$
+\item proposition\_34AuxConjConcl8sat5 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, A, B, B, D, C))$
+\item lemma\_PGflipsat0sat6 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, B, C, C, D, A))$
+\item axiom\_congruentequalsat7 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Cc, Ca, Cb))$
+\item axiom\_ETsymmetricsat8 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, C, A, B))$
+\item proposition\_34AuxConjConcl8sat5sat9 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, A, B, C, B, D))$
+\item lemma\_PGflipsat0sat6sat10 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, B, C, A, C, D))$
+\item axiom\_congruentequalsat7sat11 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Cb, Cc, Ca))$
+\item axiom\_ETsymmetricsat8sat12 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, B, C, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, A, B, D, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat14 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, B, C, D, A, C))$
+\item axiom\_congruentequalsat15 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Cc, Cb, Ca))$
+\item axiom\_ETsymmetricsat16 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, C, B, A))$
+\item proposition\_34AuxConjConcl8sat5sat17 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, A, B, C, D, B))$
+\item lemma\_PGflipsat0sat6sat18 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, B, C, A, D, C))$
+\item axiom\_congruentequalsat7sat19 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Cb, Ca, Cc))$
+\item axiom\_ETsymmetricsat8sat20 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, B, A, C))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, A, B, D, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat22 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, B, C, D, C, A))$
+\item axiom\_congruentequalsat7sat11sat23 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, B, C, Ca, Cc, Cb))$
+\item axiom\_ETsymmetricsat8sat12sat24 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, A, C, B))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, A, B, B, C, D))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, B, C, C, A, D))$
+\item axiom\_congruentequalsat27 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, A, B, C))$
+\item axiom\_ETpermutationAuxConjConcl8sat28 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, A, B, C))$
+\item axiom\_ETpermutationAuxConjConcl6sat29 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, A, B, C))$
+\item axiom\_ETpermutationAuxConjConcl4sat30 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, A, B, C))$
+\item axiom\_ETpermutationAuxConjConcl2sat31 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, A, B, C))$
+\item axiom\_ETpermutationAuxConjConcl0sat32 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, A, B, C))$
+\item proposition\_34AuxConjConcl8sat5sat33 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, D, C, C, A, B))$
+\item lemma\_PGflipsat0sat6sat34 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, D, A, A, B, C))$
+\item axiom\_congruentequalsat7sat35 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, A, B, C))$
+\item axiom\_ETsymmetricsat8sat36 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat37 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, D, C, A, B))$
+\item lemma\_PGflipsat0sat6sat10sat38 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, D, A, B, C))$
+\item axiom\_congruentequalsat7sat11sat39 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, A, B, C))$
+\item axiom\_ETsymmetricsat8sat12sat40 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat41 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, C, B, C, A, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat42 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, A, C, A, B, C))$
+\item axiom\_congruentequalsat15sat43 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, A, B, C))$
+\item axiom\_ETsymmetricsat16sat44 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat17sat45 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, D, B, C, A, B))$
+\item lemma\_PGflipsat0sat6sat18sat46 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, D, C, A, B, C))$
+\item axiom\_congruentequalsat7sat19sat47 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, A, B, C))$
+\item axiom\_ETsymmetricsat8sat20sat48 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat49 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, B, C, C, A, B))$
+\item lemma\_PGflipsat0sat6sat10sat22sat50 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, C, A, A, B, C))$
+\item axiom\_congruentequalsat7sat11sat23sat51 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, A, B, C))$
+\item axiom\_ETsymmetricsat8sat12sat24sat52 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat53 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, D, C, A, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat54 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, D, A, B, C))$
+\item axiom\_EFsymmetricsat55 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, A, D, C, B))$
+\item axiom\_EFsymmetricsat56 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, C, B, A, D))$
+\item axiom\_EFsymmetricsat55sat57 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, C, D, A, B))$
+\item axiom\_EFsymmetricsat58 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, D, A, B, C))$
+\item axiom\_EFsymmetricsat55sat59 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, B, A, D, C))$
+\item axiom\_EFsymmetricsat56sat60 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, D, C, B, A))$
+\item axiom\_EFsymmetricsat55sat57sat61 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cb, Cc, Cd, B, C, D, A))$
+\item axiom\_EFpermutationAuxConjConcl12sat62 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, A, B, C, D))$
+\item axiom\_EFpermutationAuxConjConcl10sat63 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, A, B, C, D))$
+\item axiom\_EFpermutationAuxConjConcl8sat64 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, A, B, C, D))$
+\item axiom\_EFpermutationAuxConjConcl6sat65 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, A, B, C, D))$
+\item axiom\_EFpermutationAuxConjConcl4sat66 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, A, B, C, D))$
+\item axiom\_EFpermutationAuxConjConcl2sat67 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, A, B, C, D))$
+\item axiom\_EFpermutationAuxConjConcl0sat68 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, A, B, C, D))$
+\item axiom\_EFsymmetricsat55sat69 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Ca, Cb, Cc, Cd))$
+\item axiom\_EFsymmetricsat56sat70 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Ca, Cb, Cc, Cd))$
+\item axiom\_EFsymmetricsat55sat57sat71 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Ca, Cb, Cc, Cd))$
+\item axiom\_EFsymmetricsat58sat72 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Ca, Cb, Cc, Cd))$
+\item axiom\_EFsymmetricsat55sat59sat73 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Ca, Cb, Cc, Cd))$
+\item axiom\_EFsymmetricsat56sat60sat74 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Ca, Cb, Cc, Cd))$
+\item axiom\_EFsymmetricsat55sat57sat61sat75 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Ca, Cb, Cc, Cd))$
+\item axiom\_congruentequalsat76 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, C, A, B))$
+\item axiom\_ETpermutationAuxConjConcl8sat77 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, C, A, B))$
+\item axiom\_ETpermutationAuxConjConcl6sat78 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, C, A, B))$
+\item axiom\_ETpermutationAuxConjConcl4sat79 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, C, A, B))$
+\item axiom\_ETpermutationAuxConjConcl2sat80 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, C, A, B))$
+\item axiom\_ETpermutationAuxConjConcl0sat81 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, C, A, B))$
+\item proposition\_34AuxConjConcl8sat5sat82 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, D, C, B, C, A))$
+\item lemma\_PGflipsat0sat6sat83 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, D, A, C, A, B))$
+\item axiom\_congruentequalsat7sat84 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, C, A, B))$
+\item axiom\_ETsymmetricsat8sat85 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, D, B, C, A))$
+\item lemma\_PGflipsat0sat6sat10sat87 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, D, C, A, B))$
+\item axiom\_congruentequalsat7sat11sat88 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, C, A, B))$
+\item axiom\_ETsymmetricsat8sat12sat89 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, C, B, B, C, A))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, A, C, C, A, B))$
+\item axiom\_congruentequalsat15sat92 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, C, A, B))$
+\item axiom\_ETsymmetricsat16sat93 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, D, B, B, C, A))$
+\item lemma\_PGflipsat0sat6sat18sat95 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, D, C, C, A, B))$
+\item axiom\_congruentequalsat7sat19sat96 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, C, A, B))$
+\item axiom\_ETsymmetricsat8sat20sat97 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, B, C, B, C, A))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, C, A, C, A, B))$
+\item axiom\_congruentequalsat7sat11sat23sat100 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, C, A, B))$
+\item axiom\_ETsymmetricsat8sat12sat24sat101 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, D, B, C, A))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, D, C, A, B))$
+\item axiom\_congruentequalsat76sat104 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cc, Ca, Cb))$
+\item axiom\_ETpermutationAuxConjConcl8sat77sat105 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cb, Cc, Ca))$
+\item axiom\_ETpermutationAuxConjConcl6sat78sat106 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Ca, Cc, Cb))$
+\item axiom\_ETpermutationAuxConjConcl4sat79sat107 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cc, Cb, Ca))$
+\item axiom\_ETpermutationAuxConjConcl2sat80sat108 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, A, C, B, D))$
+\item lemma\_PGflipsat0sat6sat83sat110 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, B, A, C, D))$
+\item axiom\_congruentequalsat7sat84sat111 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cb, Cc, Ca))$
+\item axiom\_ETsymmetricsat8sat85sat112 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, B, C, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, A, D, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, B, D, A, C))$
+\item axiom\_congruentequalsat7sat11sat88sat115 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, A, B, D, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, B, C, D, A))$
+\item axiom\_congruentequalsat15sat92sat118 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Ca, Cc, Cb))$
+\item axiom\_ETsymmetricsat16sat93sat119 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, A, C, B))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, A, B, C, D))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, B, C, A, D))$
+\item axiom\_congruentequalsat7sat19sat96sat122 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cc, Cb, Ca))$
+\item axiom\_ETsymmetricsat8sat20sat97sat123 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, C, B, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, A, C, D, B))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, B, A, D, C))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, A, B, Cb, Ca, Cc))$
+\item axiom\_ETsymmetricsat8sat12sat24sat101sat127 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, B, A, C))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, A, D, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, B, D, C, A))$
+\item axiom\_congruentequalsat76sat104sat130 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, B, C, A))$
+\item axiom\_ETpermutationAuxConjConcl8sat77sat105sat131 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, B, C, A))$
+\item axiom\_ETpermutationAuxConjConcl6sat78sat106sat132 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, B, C, A))$
+\item axiom\_ETpermutationAuxConjConcl4sat79sat107sat133 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, B, C, A))$
+\item axiom\_ETpermutationAuxConjConcl2sat80sat108sat134 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, B, C, A))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109sat135 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, D, A, B, C))$
+\item lemma\_PGflipsat0sat6sat83sat110sat136 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, D, B, C, A))$
+\item axiom\_congruentequalsat7sat84sat111sat137 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, B, C, A))$
+\item axiom\_ETsymmetricsat8sat85sat112sat138 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113sat139 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, C, B, A, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114sat140 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, A, C, B, C, A))$
+\item axiom\_congruentequalsat7sat11sat88sat115sat141 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, B, C, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116sat142 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, D, C, A, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117sat143 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, D, A, B, C, A))$
+\item axiom\_congruentequalsat15sat92sat118sat144 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, B, C, A))$
+\item axiom\_ETsymmetricsat16sat93sat119sat145 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120sat146 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, D, A, B, C))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121sat147 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, D, B, C, A))$
+\item axiom\_congruentequalsat7sat19sat96sat122sat148 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, B, C, A))$
+\item axiom\_ETsymmetricsat8sat20sat97sat123sat149 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124sat150 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, D, B, A, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125sat151 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, D, C, B, C, A))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126sat152 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, B, C, A))$
+\item axiom\_ETsymmetricsat8sat12sat24sat101sat127sat153 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128sat154 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, B, C, A, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129sat155 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, C, A, B, C, A))$
+\item axiom\_congruentequalsat76sat104sat130sat156 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cb, Cc, Ca))$
+\item axiom\_ETpermutationAuxConjConcl6sat78sat106sat132sat157 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cb, Ca, Cc))$
+\item axiom\_ETpermutationAuxConjConcl4sat79sat107sat133sat158 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Ca, Cc, Cb))$
+\item axiom\_ETpermutationAuxConjConcl2sat80sat108sat134sat159 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109sat135sat160 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, B, C, D, C, B))$
+\item lemma\_PGflipsat0sat6sat83sat110sat136sat161 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, C, A, D, A, C))$
+\item axiom\_congruentequalsat7sat84sat111sat137sat162 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113sat139sat163 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, B, C, B, D, C))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114sat140sat164 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, C, A, C, D, A))$
+\item axiom\_congruentequalsat7sat11sat88sat115sat141sat165 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116sat142sat166 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, B, C, C, B, D))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117sat143sat167 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, C, A, A, C, D))$
+\item axiom\_congruentequalsat15sat92sat118sat144sat168 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cb, Ca, Cc))$
+\item axiom\_ETsymmetricsat16sat93sat119sat145sat169 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, B, A, C))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120sat146sat170 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, B, C, D, B, C))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121sat147sat171 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, C, A, D, C, A))$
+\item axiom\_congruentequalsat7sat19sat96sat122sat148sat172 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Ca, Cc, Cb))$
+\item axiom\_ETsymmetricsat8sat20sat97sat123sat149sat173 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, A, C, B))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124sat150sat174 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, B, C, B, C, D))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125sat151sat175 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, C, A, C, A, D))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126sat152sat176 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, C, A, Cc, Cb, Ca))$
+\item axiom\_ETsymmetricsat8sat12sat24sat101sat127sat153sat177 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, C, B, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128sat154sat178 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, B, C, C, D, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129sat155sat179 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, C, A, A, D, C))$
+\item axiom\_congruentequalsat180 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, C, B, A))$
+\item axiom\_ETpermutationAuxConjConcl6sat181 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, C, B, A))$
+\item axiom\_ETpermutationAuxConjConcl4sat182 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, C, B, A))$
+\item axiom\_ETpermutationAuxConjConcl2sat183 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, C, B, A))$
+\item proposition\_34AuxConjConcl8sat5sat184 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, D, C, B, A, C))$
+\item lemma\_PGflipsat0sat6sat185 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, D, A, C, B, A))$
+\item axiom\_congruentequalsat7sat186 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, C, B, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat187 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, D, B, A, C))$
+\item lemma\_PGflipsat0sat6sat10sat188 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, D, C, B, A))$
+\item axiom\_congruentequalsat7sat11sat189 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, C, B, A))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat190 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, C, B, B, A, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat191 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, A, C, C, B, A))$
+\item axiom\_congruentequalsat15sat192 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, C, B, A))$
+\item axiom\_ETsymmetricsat16sat193 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat17sat194 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, D, B, B, A, C))$
+\item lemma\_PGflipsat0sat6sat18sat195 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, D, C, C, B, A))$
+\item axiom\_congruentequalsat7sat19sat196 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, C, B, A))$
+\item axiom\_ETsymmetricsat8sat20sat197 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat198 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, B, C, B, A, C))$
+\item lemma\_PGflipsat0sat6sat10sat22sat199 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, C, A, C, B, A))$
+\item axiom\_congruentequalsat7sat11sat23sat200 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, C, B, A))$
+\item axiom\_ETsymmetricsat8sat12sat24sat201 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat202 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, D, B, A, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat203 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, D, C, B, A))$
+\item axiom\_congruentequalsat76sat104sat204 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, B, A, C))$
+\item axiom\_ETpermutationAuxConjConcl6sat78sat106sat205 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, B, A, C))$
+\item axiom\_ETpermutationAuxConjConcl4sat79sat107sat206 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, B, A, C))$
+\item axiom\_ETpermutationAuxConjConcl2sat80sat108sat207 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, B, A, C))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109sat208 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, D, A, C, B))$
+\item lemma\_PGflipsat0sat6sat83sat110sat209 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, D, B, A, C))$
+\item axiom\_congruentequalsat7sat84sat111sat210 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, B, A, C))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113sat211 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, C, B, A, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114sat212 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, A, C, B, A, C))$
+\item axiom\_congruentequalsat7sat11sat88sat115sat213 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, B, A, C))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116sat214 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, D, C, A, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117sat215 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, D, A, B, A, C))$
+\item axiom\_congruentequalsat15sat92sat118sat216 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, B, A, C))$
+\item axiom\_ETsymmetricsat16sat93sat119sat217 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120sat218 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, D, A, C, B))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121sat219 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, D, B, A, C))$
+\item axiom\_congruentequalsat7sat19sat96sat122sat220 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, B, A, C))$
+\item axiom\_ETsymmetricsat8sat20sat97sat123sat221 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124sat222 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, D, B, A, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125sat223 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, D, C, B, A, C))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126sat224 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, B, A, C))$
+\item axiom\_ETsymmetricsat8sat12sat24sat101sat127sat225 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128sat226 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, B, C, A, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129sat227 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, C, A, B, A, C))$
+\item axiom\_congruentequalsat76sat104sat130sat156sat228 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Cc, Ca, A, C, B))$
+\item axiom\_ETpermutationAuxConjConcl6sat78sat106sat132sat157sat229 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, A, C, B))$
+\item axiom\_ETpermutationAuxConjConcl4sat79sat107sat133sat158sat230 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, A, C, B))$
+\item axiom\_ETpermutationAuxConjConcl2sat80sat108sat134sat159sat231 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, A, C, B))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109sat135sat160sat232 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, C, B, C, B, A))$
+\item lemma\_PGflipsat0sat6sat83sat110sat136sat161sat233 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, A, C, A, C, B))$
+\item axiom\_congruentequalsat7sat84sat111sat137sat162sat234 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cb, Cc, A, C, B))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113sat139sat163sat235 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, D, C, C, B, A))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114sat140sat164sat236 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, D, A, A, C, B))$
+\item axiom\_congruentequalsat7sat11sat88sat115sat141sat165sat237 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Ca, Cb, A, C, B))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116sat142sat166sat238 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, D, C, B, A))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117sat143sat167sat239 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, D, A, C, B))$
+\item axiom\_congruentequalsat15sat92sat118sat144sat168sat240 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cb, Ca, Cc, A, C, B))$
+\item axiom\_ETsymmetricsat16sat93sat119sat145sat169sat241 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Ca, Cc, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120sat146sat170sat242 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(D, B, C, C, B, A))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121sat147sat171sat243 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(D, C, A, A, C, B))$
+\item axiom\_congruentequalsat7sat19sat96sat122sat148sat172sat244 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Ca, Cc, Cb, A, C, B))$
+\item axiom\_ETsymmetricsat8sat20sat97sat123sat149sat173sat245 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Ca, Cc, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124sat150sat174sat246 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, C, D, C, B, A))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125sat151sat175sat247 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, A, D, A, C, B))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126sat152sat176sat248 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(Cc, Cb, Ca, A, C, B))$
+\item axiom\_ETsymmetricsat8sat12sat24sat101sat127sat153sat177sat249 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;eT(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Ca, Cc, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128sat154sat178sat250 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, D, B, C, B, A))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129sat155sat179sat251 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, D, C, A, C, B))$
+\item axiom\_congruentequalsat180sat252 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat184sat253 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, A, C, C, D, B))$
+\item lemma\_PGflipsat0sat6sat185sat254 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, B, A, A, D, C))$
+\item axiom\_congruentequalsat7sat186sat255 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat187sat256 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, A, C, D, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat188sat257 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, B, A, D, C, A))$
+\item axiom\_congruentequalsat7sat11sat189sat258 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Ca, Cc, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat190sat259 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, A, C, B, C, D))$
+\item lemma\_PGflipsat0sat6sat10sat14sat191sat260 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, B, A, C, A, D))$
+\item axiom\_congruentequalsat15sat192sat261 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat17sat194sat262 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, A, C, B, D, C))$
+\item lemma\_PGflipsat0sat6sat18sat195sat263 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, B, A, C, D, A))$
+\item axiom\_congruentequalsat7sat19sat196sat264 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat198sat265 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, A, C, C, B, D))$
+\item lemma\_PGflipsat0sat6sat10sat22sat199sat266 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, B, A, A, C, D))$
+\item axiom\_congruentequalsat7sat11sat23sat200sat267 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(C, B, A, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat202sat268 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(B, A, C, D, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat203sat269 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(C, B, A, D, A, C))$
+\item axiom\_congruentequalsat76sat104sat204sat270 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109sat208sat271 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, C, B, D, B, C))$
+\item lemma\_PGflipsat0sat6sat83sat110sat209sat272 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, A, C, D, C, A))$
+\item axiom\_congruentequalsat7sat84sat111sat210sat273 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Ca, Cc, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113sat211sat274 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, C, B, B, C, D))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114sat212sat275 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, A, C, C, A, D))$
+\item axiom\_congruentequalsat7sat11sat88sat115sat213sat276 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116sat214sat277 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, C, B, C, D, B))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117sat215sat278 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, A, C, A, D, C))$
+\item axiom\_congruentequalsat15sat92sat118sat216sat279 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120sat218sat280 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, C, B, D, C, B))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121sat219sat281 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, A, C, D, A, C))$
+\item axiom\_congruentequalsat7sat19sat96sat122sat220sat282 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124sat222sat283 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, C, B, B, D, C))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125sat223sat284 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, A, C, C, D, A))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126sat224sat285 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(B, A, C, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128sat226sat286 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(A, C, B, C, B, D))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129sat227sat287 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(B, A, C, A, C, D))$
+\item axiom\_congruentequalsat76sat104sat130sat156sat228sat288 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Ca, Cc, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat82sat109sat135sat160sat232sat289 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, A, B, C, D))$
+\item lemma\_PGflipsat0sat6sat83sat110sat136sat161sat233sat290 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, B, C, A, D))$
+\item axiom\_congruentequalsat7sat84sat111sat137sat162sat234sat291 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cc, Cb, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat86sat113sat139sat163sat235sat292 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, A, C, D, B))$
+\item lemma\_PGflipsat0sat6sat10sat87sat114sat140sat164sat236sat293 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, B, A, D, C))$
+\item axiom\_congruentequalsat7sat11sat88sat115sat141sat165sat237sat294 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cb, Ca, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat90sat116sat142sat166sat238sat295 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, A, D, B, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat91sat117sat143sat167sat239sat296 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, B, D, C, A))$
+\item axiom\_congruentequalsat15sat92sat118sat144sat168sat240sat297 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cc, Ca, Cb))$
+\item proposition\_34AuxConjConcl8sat5sat17sat94sat120sat146sat170sat242sat298 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, A, C, B, D))$
+\item lemma\_PGflipsat0sat6sat18sat95sat121sat147sat171sat243sat299 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, B, A, C, D))$
+\item axiom\_congruentequalsat7sat19sat96sat122sat148sat172sat244sat300 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Cb, Cc, Ca))$
+\item proposition\_34AuxConjConcl8sat5sat9sat21sat98sat124sat150sat174sat246sat301 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, A, D, C, B))$
+\item lemma\_PGflipsat0sat6sat10sat22sat99sat125sat151sat175sat247sat302 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, B, D, A, C))$
+\item axiom\_congruentequalsat7sat11sat23sat100sat126sat152sat176sat248sat303 : $\forall A\;\forall B\;\forall C\;\forall Ca\;\forall Cb\;\forall Cc\;cong\_3(A, B, C, Ca, Cb, Cc) \Rightarrow eT(A, C, B, Ca, Cb, Cc))$
+\item proposition\_34AuxConjConcl8sat5sat9sat13sat25sat102sat128sat154sat178sat250sat304 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, C, D, B) \Rightarrow eT(C, B, A, B, D, C))$
+\item lemma\_PGflipsat0sat6sat10sat14sat26sat103sat129sat155sat179sat251sat305 : $\forall A\;\forall B\;\forall C\;\forall D\;pG(A, B, C, D) \Rightarrow eT(A, C, B, C, D, A))$
+\item axiom\_EFpermutationAuxConjConcl12sat306 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, A, D, C, B))$
+\item axiom\_EFpermutationAuxConjConcl10sat307 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, A, D, C, B))$
+\item axiom\_EFpermutationAuxConjConcl8sat308 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, A, D, C, B))$
+\item axiom\_EFpermutationAuxConjConcl6sat309 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, A, D, C, B))$
+\item axiom\_EFpermutationAuxConjConcl4sat310 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, A, D, C, B))$
+\item axiom\_EFpermutationAuxConjConcl2sat311 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, A, D, C, B))$
+\item axiom\_EFpermutationAuxConjConcl0sat312 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, A, D, C, B))$
+\item axiom\_EFsymmetricsat55sat313 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Ca, Cd, Cc, Cb))$
+\item axiom\_EFsymmetricsat56sat314 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Ca, Cd, Cc, Cb))$
+\item axiom\_EFsymmetricsat55sat57sat315 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Ca, Cd, Cc, Cb))$
+\item axiom\_EFsymmetricsat58sat316 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Ca, Cd, Cc, Cb))$
+\item axiom\_EFsymmetricsat55sat59sat317 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Ca, Cd, Cc, Cb))$
+\item axiom\_EFsymmetricsat56sat60sat318 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Ca, Cd, Cc, Cb))$
+\item axiom\_EFsymmetricsat55sat57sat61sat319 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Ca, Cd, Cc, Cb))$
+\item axiom\_EFpermutationAuxConjConcl10sat307sat320 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Cc, Cd, Ca, Cb))$
+\item axiom\_EFpermutationAuxConjConcl8sat308sat321 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Cd, Cc, Cb, Ca))$
+\item axiom\_EFpermutationAuxConjConcl6sat309sat322 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Cb, Cc, Cd, Ca))$
+\item axiom\_EFpermutationAuxConjConcl4sat310sat323 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Cc, Cb, Ca, Cd))$
+\item axiom\_EFpermutationAuxConjConcl2sat311sat324 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Cd, Ca, Cb, Cc))$
+\item axiom\_EFpermutationAuxConjConcl0sat312sat325 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(A, D, C, B, Cb, Ca, Cd, Cc))$
+\item axiom\_EFsymmetricsat56sat314sat326 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, C, D, A, B))$
+\item axiom\_EFsymmetricsat55sat57sat315sat327 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, C, B, A, D))$
+\item axiom\_EFsymmetricsat58sat316sat328 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, D, C, B, A))$
+\item axiom\_EFsymmetricsat55sat59sat317sat329 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, B, C, D, A))$
+\item axiom\_EFsymmetricsat56sat60sat318sat330 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, D, A, B, C))$
+\item axiom\_EFsymmetricsat55sat57sat61sat319sat331 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Ca, Cd, Cc, Cb, B, A, D, C))$
+\item axiom\_EFpermutationAuxConjConcl10sat332 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, C, B, A, D))$
+\item axiom\_EFpermutationAuxConjConcl8sat333 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, C, B, A, D))$
+\item axiom\_EFpermutationAuxConjConcl6sat334 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, C, B, A, D))$
+\item axiom\_EFpermutationAuxConjConcl4sat335 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, C, B, A, D))$
+\item axiom\_EFpermutationAuxConjConcl2sat336 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, C, B, A, D))$
+\item axiom\_EFpermutationAuxConjConcl0sat337 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, C, B, A, D))$
+\item axiom\_EFsymmetricsat56sat338 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Cc, Cb, Ca, Cd))$
+\item axiom\_EFsymmetricsat55sat57sat339 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Cc, Cb, Ca, Cd))$
+\item axiom\_EFsymmetricsat58sat340 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Cc, Cb, Ca, Cd))$
+\item axiom\_EFsymmetricsat55sat59sat341 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Cc, Cb, Ca, Cd))$
+\item axiom\_EFsymmetricsat56sat60sat342 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Cc, Cb, Ca, Cd))$
+\item axiom\_EFsymmetricsat55sat57sat61sat343 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Cc, Cb, Ca, Cd))$
+\item axiom\_EFpermutationAuxConjConcl10sat307sat320sat344 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, C, D, A, B))$
+\item axiom\_EFpermutationAuxConjConcl8sat308sat321sat345 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, C, D, A, B))$
+\item axiom\_EFpermutationAuxConjConcl6sat309sat322sat346 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, C, D, A, B))$
+\item axiom\_EFpermutationAuxConjConcl4sat310sat323sat347 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, C, D, A, B))$
+\item axiom\_EFpermutationAuxConjConcl2sat311sat324sat348 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, C, D, A, B))$
+\item axiom\_EFpermutationAuxConjConcl0sat312sat325sat349 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, C, D, A, B))$
+\item axiom\_EFsymmetricsat56sat314sat326sat350 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Cc, Cd, Ca, Cb))$
+\item axiom\_EFsymmetricsat55sat57sat315sat327sat351 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Cc, Cd, Ca, Cb))$
+\item axiom\_EFsymmetricsat58sat316sat328sat352 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Cc, Cd, Ca, Cb))$
+\item axiom\_EFsymmetricsat55sat59sat317sat329sat353 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Cc, Cd, Ca, Cb))$
+\item axiom\_EFsymmetricsat56sat60sat318sat330sat354 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Cc, Cd, Ca, Cb))$
+\item axiom\_EFsymmetricsat55sat57sat61sat319sat331sat355 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Cc, Cd, Ca, Cb))$
+\item axiom\_EFpermutationAuxConjConcl8sat333sat356 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Cb, Ca, Cd, Cc))$
+\item axiom\_EFpermutationAuxConjConcl6sat334sat357 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Cd, Ca, Cb, Cc))$
+\item axiom\_EFpermutationAuxConjConcl2sat336sat358 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Cb, Cc, Cd, Ca))$
+\item axiom\_EFpermutationAuxConjConcl0sat337sat359 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, B, A, D, Cd, Cc, Cb, Ca))$
+\item axiom\_EFsymmetricsat58sat340sat360 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, B, A, D, C))$
+\item axiom\_EFsymmetricsat55sat59sat341sat361 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, D, A, B, C))$
+\item axiom\_EFsymmetricsat56sat60sat342sat362 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, B, C, D, A))$
+\item axiom\_EFsymmetricsat55sat57sat61sat343sat363 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cb, Ca, Cd, D, C, B, A))$
+\item axiom\_EFpermutationAuxConjConcl8sat308sat321sat345sat364 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Cb, Cc, Cd, Ca))$
+\item axiom\_EFpermutationAuxConjConcl6sat309sat322sat346sat365 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Cd, Cc, Cb, Ca))$
+\item axiom\_EFpermutationAuxConjConcl2sat311sat324sat348sat366 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Cb, Ca, Cd, Cc))$
+\item axiom\_EFpermutationAuxConjConcl0sat312sat325sat349sat367 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(C, D, A, B, Cd, Ca, Cb, Cc))$
+\item axiom\_EFsymmetricsat58sat316sat328sat352sat368 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, B, C, D, A))$
+\item axiom\_EFsymmetricsat55sat59sat317sat329sat353sat369 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, D, C, B, A))$
+\item axiom\_EFsymmetricsat56sat60sat318sat330sat354sat370 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, B, A, D, C))$
+\item axiom\_EFsymmetricsat55sat57sat61sat319sat331sat355sat371 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cc, Cd, Ca, Cb, D, A, B, C))$
+\item axiom\_EFpermutationAuxConjConcl8sat372 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, D, A, B, C))$
+\item axiom\_EFpermutationAuxConjConcl6sat373 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, D, A, B, C))$
+\item axiom\_EFpermutationAuxConjConcl2sat374 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, D, A, B, C))$
+\item axiom\_EFpermutationAuxConjConcl0sat375 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, D, A, B, C))$
+\item axiom\_EFsymmetricsat58sat376 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Cd, Ca, Cb, Cc))$
+\item axiom\_EFsymmetricsat55sat59sat377 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Cd, Ca, Cb, Cc))$
+\item axiom\_EFsymmetricsat56sat60sat378 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Cd, Ca, Cb, Cc))$
+\item axiom\_EFsymmetricsat55sat57sat61sat379 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Cd, Ca, Cb, Cc))$
+\item axiom\_EFpermutationAuxConjConcl8sat308sat321sat380 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, B, A, D, C))$
+\item axiom\_EFpermutationAuxConjConcl6sat309sat322sat381 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, B, A, D, C))$
+\item axiom\_EFpermutationAuxConjConcl2sat311sat324sat382 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, B, A, D, C))$
+\item axiom\_EFpermutationAuxConjConcl0sat312sat325sat383 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, B, A, D, C))$
+\item axiom\_EFsymmetricsat58sat316sat328sat384 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Cb, Ca, Cd, Cc))$
+\item axiom\_EFsymmetricsat55sat59sat317sat329sat385 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Cb, Ca, Cd, Cc))$
+\item axiom\_EFsymmetricsat56sat60sat318sat330sat386 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Cb, Ca, Cd, Cc))$
+\item axiom\_EFsymmetricsat55sat57sat61sat319sat331sat387 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Cb, Ca, Cd, Cc))$
+\item axiom\_EFpermutationAuxConjConcl8sat333sat356sat388 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, D, C, B, A))$
+\item axiom\_EFpermutationAuxConjConcl6sat334sat357sat389 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, D, C, B, A))$
+\item axiom\_EFpermutationAuxConjConcl2sat336sat358sat390 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, D, C, B, A))$
+\item axiom\_EFpermutationAuxConjConcl0sat337sat359sat391 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, D, C, B, A))$
+\item axiom\_EFsymmetricsat58sat340sat360sat392 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Cd, Cc, Cb, Ca))$
+\item axiom\_EFsymmetricsat55sat59sat341sat361sat393 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Cd, Cc, Cb, Ca))$
+\item axiom\_EFsymmetricsat56sat60sat342sat362sat394 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Cd, Cc, Cb, Ca))$
+\item axiom\_EFsymmetricsat55sat57sat61sat343sat363sat395 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Cd, Cc, Cb, Ca))$
+\item axiom\_EFpermutationAuxConjConcl8sat308sat321sat345sat364sat396 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Cc, Cd, Ca, B, C, D, A))$
+\item axiom\_EFpermutationAuxConjConcl6sat309sat322sat346sat365sat397 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Cc, Cb, Ca, B, C, D, A))$
+\item axiom\_EFpermutationAuxConjConcl2sat311sat324sat348sat366sat398 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cb, Ca, Cd, Cc, B, C, D, A))$
+\item axiom\_EFpermutationAuxConjConcl0sat312sat325sat349sat367sat399 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(Cd, Ca, Cb, Cc, B, C, D, A))$
+\item axiom\_EFsymmetricsat58sat316sat328sat352sat368sat400 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, C, D, A, Cb, Cc, Cd, Ca))$
+\item axiom\_EFsymmetricsat55sat59sat317sat329sat353sat369sat401 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, C, B, A, Cb, Cc, Cd, Ca))$
+\item axiom\_EFsymmetricsat56sat60sat318sat330sat354sat370sat402 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(B, A, D, C, Cb, Cc, Cd, Ca))$
+\item axiom\_EFsymmetricsat55sat57sat61sat319sat331sat355sat371sat403 : $\forall A\;\forall B\;\forall C\;\forall D\;\forall Ca\;\forall Cb\;\forall Cc\;\forall Cd\;eF(A, B, C, D, Ca, Cb, Cc, Cd) \Rightarrow eF(D, A, B, C, Cb, Cc, Cd, Ca))$
+\end{enumerate}
+
+\hrulefill
+
+\begin{theorem}
+proposition\_43 : $\forall A \; \forall B \; \forall C \; \forall D \; \forall E \; \forall F \; \forall G \; \forall H \; \forall K \; ( pG(A, B, C, D)\wedge betS(A, H, D)\wedge betS(A, E, B)\wedge betS(D, F, C)\wedge betS(B, G, C)\wedge betS(A, K, C)\wedge pG(E, A, H, K)\wedge pG(G, K, F, C) \Rightarrow eF(K, G, B, E, D, F, K, H)\;)$
+\end{theorem}
+
+\newcounter{proofstepnum}
+\setcounter{proofstepnum}{0}
+
+\noindent{\em Proof:}
+\vspace{5pt}
+
+\noindent Consider arbitrary $a$, $b$, $c$, $d$, $e$, $f$, $g$, $h$, $i$ such that: \begin{itemize} 
+
+\item  $pG(a, b, c, d)$, 
+\item  $betS(a, h, d)$, 
+\item  $betS(a, e, b)$, 
+\item  $betS(d, f, c)$, 
+\item  $betS(b, g, c)$, 
+\item  $betS(a, i, c)$, 
+\item  $pG(e, a, h, i)$, 
+\item  $pG(g, i, f, c)$. 
+\end{itemize} 
+It should be proved that $eF(i, g, b, e, d, f, i, h)$.
+\vspace{5pt}
+
+\proofstep{0}{$eF(b, g, i, a, a, i, f, d)$ ({\scriptsize by MP, from $betS(b, g, c)$, $betS(a, i, c)$, $betS(a, i, c)$, $betS(d, f, c)$, $pG(g, i, f, c)$, $pG(a, b, c, d)$ using axiom axiom\_cutoff1; instantiation:  $A$ $\mapsto$  $b$,  $B$ $\mapsto$  $g$,  $C$ $\mapsto$  $c$,  $D$ $\mapsto$  $i$,  $E$ $\mapsto$  $a$,  $Ca$ $\mapsto$  $a$,  $Cb$ $\mapsto$  $i$,  $Cc$ $\mapsto$  $c$,  $Cd$ $\mapsto$  $f$,  $Ce$ $\mapsto$  $d$}) }
+\proofstep{0}{$eF(g, b, e, i, f, d, h, i)$ ({\scriptsize by MP, from $betS(a, e, b)$, $betS(a, h, d)$, $pG(e, a, h, i)$, $eF(b, g, i, a, a, i, f, d)$ using axiom axiom\_cutoff2; instantiation:  $A$ $\mapsto$  $g$,  $B$ $\mapsto$  $b$,  $C$ $\mapsto$  $e$,  $D$ $\mapsto$  $a$,  $E$ $\mapsto$  $i$,  $Ca$ $\mapsto$  $f$,  $Cb$ $\mapsto$  $d$,  $Cc$ $\mapsto$  $h$,  $Cd$ $\mapsto$  $a$,  $Ce$ $\mapsto$  $i$}) }
+\proofstep{0}{$eF(i, g, b, e, d, f, i, h)$ ({\scriptsize by MP, from $eF(g, b, e, i, f, d, h, i)$ using axiom axiom\_EFsymmetricsat56sat60sat318sat330sat386; instantiation:  $A$ $\mapsto$  $g$,  $B$ $\mapsto$  $b$,  $C$ $\mapsto$  $e$,  $D$ $\mapsto$  $i$,  $Ca$ $\mapsto$  $f$,  $Cb$ $\mapsto$  $d$,  $Cc$ $\mapsto$  $h$,  $Cd$ $\mapsto$  $i$}) }
+\proofstep{0}{Proved by assumption! ({\scriptsize by QEDas})}
+
+\vspace{5pt}
+\noindent
+
+% \input{PROOFhint1pQF_BV_illustration.tkz}
+
+\end{document}

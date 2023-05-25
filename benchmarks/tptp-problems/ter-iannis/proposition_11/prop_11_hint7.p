@@ -1,4 +1,4 @@
-% ./larus -vcoq -m12 -l100 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint7.p
+% ./larus -vcoq -m10 -l100 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint7.p
 %%% Without hint
 % No proof found
 % With -i : None

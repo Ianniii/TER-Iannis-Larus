@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage{argoclp}
+\usepackage{tikz}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Proof of theorem ,,lemma\_3\_6a``}
+\author{CLprover}
+\maketitle
+
+\noindent 
+{\bfseries Axioms:} 
+\begin{enumerate}
+\item axiom\_betweennesssymmetry : $\forall A \; \forall B \; \forall C \; ( betS(A, B, C) \Rightarrow betS(C, B, A)\;)$
+\item axiom\_innertransitivity : $\forall A \; \forall B \; \forall C \; \forall D \; ( betS(A, B, D)\wedge betS(B, C, D) \Rightarrow betS(A, B, C)\;)$
+\end{enumerate}
+
+\hrulefill
+
+\begin{theorem}
+lemma\_3\_6a : $\forall A \; \forall B \; \forall C \; \forall D \; ( betS(A, B, C)\wedge betS(A, C, D) \Rightarrow betS(B, C, D)\;)$
+\end{theorem}
+
+\newcounter{proofstepnum}
+\setcounter{proofstepnum}{0}
+
+\noindent{\em Proof:}
+\vspace{5pt}
+
+\noindent Consider arbitrary $a$, $b$, $c$, $d$ such that: \begin{itemize} 
+
+\item  $betS(a, b, c)$, 
+\item  $betS(a, c, d)$. 
+\end{itemize} 
+It should be proved that $betS(b, c, d)$.
+\vspace{5pt}
+
+\proofstep{0}{$betS(d, c, b)$ ({\scriptsize by MP, from $betS(a, c, d)$, $betS(a, b, c)$ using axiom axiom\_innertransitivity; instantiation:  $A$ $\mapsto$  $d$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $b$,  $D$ $\mapsto$  $a$}) }
+\proofstep{0}{$betS(b, c, d)$ ({\scriptsize by MP, from $betS(d, c, b)$ using axiom axiom\_betweennesssymmetry; instantiation:  $A$ $\mapsto$  $d$,  $B$ $\mapsto$  $c$,  $C$ $\mapsto$  $b$}) }
+\proofstep{0}{Proved by assumption! ({\scriptsize by QEDas})}
+
+\vspace{5pt}
+\noindent
+
+% \input{PROOFlemma_3_6a_hint2pQF_BV_illustration.tkz}
+
+\end{document}

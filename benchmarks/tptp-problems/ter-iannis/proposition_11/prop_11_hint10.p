@@ -1,10 +1,6 @@
 % ./larus -vcoq -m5 -l40 benchmarks/tptp-problems/ter-iannis/proposition_11/prop_11_hint10.p
-% cat proofs/PROOFprop_11_hint9pQF_BVmin.v
-% cat proofs/PROOFprop_11_hint9pQF_BV.v
-
-%%% Without hint -10
-% -i  : 
-% Without -i : Size 5 Time 13s
+% cat proofs/PROOFprop_11_hint10pQF_BVmin.v
+% cat proofs/PROOFprop_11_hint10pQF_BV.v
 
 %%% With hints -6
 % -i : 
@@ -37,9 +33,10 @@ fof(defrightangle,axiom, (! [A,B,C] : (? [X] : ((per(A,B,C)) => ((betS(A,B,X) & 
 fof(defrightangle2,axiom, (! [A,B,C,X] : ((betS(A,B,X) & cong(A,B,X,B) & cong(A,C,X,C) & ( B != C )) => ((per(A,B,C)))))).
 fof(proposition_11,conjecture,(! [A,B,C] : (? [X] : ((betS(A,C,B)) => (per(A,C,X) ))))).
 
-fof(hintname0, hint,_, _, lemma_extension(0,2,0,2,?)).
-fof(hintname1, hint, _, _, lemma_doublereverse(2,?,0,2)).
-fof(hintname2, hint,_, _, proposition_01(0,?,?)).
-fof(hintname3, hint, _, _, defncollinear(0,2,?)).
+fof(hintname0, hint,_, _, lemma_extension(0,2,0,2,_)).
+fof(hintname1, hint, _, _, lemma_doublereverse(2,_,0,2)).
+fof(hintname2, hint,_, _, proposition_01(0,_,_)).
+%%%% USELESS
+%fof(hintname3, hint, _, _, defncollinear(0,2,_)).
 
 

@@ -30,6 +30,8 @@ fof(lemma_parallelsymmetric,axiom, (! [A,B,C,D] : ((par(A,B,C,D)) => ((par(C,D,A
 fof(lemma_parallelflip,axiom, (! [A,B,C,D] : ((par(A,B,C,D)) => ((par(B,A,C,D) & par(A,B,D,C) & par(B,A,D,C)))))).
 fof(lemma_twoperpsparallel,conjecture,(! [A,B,C,D] : (?[E] : ((per(A,B,C) & per(B,C,D) & oS(A,D,B,C)) => (betS(B,C,E) & per(D,C,E)))))).
 
-fof(hintname0, hint, _, _, lemma_extension(1,2,1,2)).
-fof(hintname1, hint, _, _, lemma_collinearright(1,2,?,3)).
+%fof(hintname0, hint, _, _, lemma_extension(1,2,1,2,_)).
+fof(hintname0, hint, betS(1,2,A), _, _).
+fof(hintname2, hint, cong(2,A,1,2), _, _).
+fof(hintname1, hint, _, _, lemma_collinearright(1,2,_,3)).
 
