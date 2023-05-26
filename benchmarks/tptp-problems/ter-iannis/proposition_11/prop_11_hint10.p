@@ -38,5 +38,3 @@ fof(hintname1, hint, _, _, lemma_doublereverse(2,_,0,2)).
 fof(hintname2, hint,_, _, proposition_01(0,_,_)).
 %%%% USELESS
 %fof(hintname3, hint, _, _, defncollinear(0,2,_)).
-
-

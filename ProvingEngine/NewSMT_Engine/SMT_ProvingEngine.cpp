@@ -45,7 +45,7 @@ void SMT_ProvingEngine::Clear() {
   CONSTANTS.clear();
 
   mPremises.clear();
-  mnMaxArity = 0;
+  // mnMaxArity = 0;
   mnMaxNumberOfPremisesInAxioms = 0;
   mnNumberOfAssumptions = 0;
   mProofPremises = True();
@@ -101,6 +101,11 @@ Expression SMT_ProvingEngine::CorrectnessConstraint()
 
       cOneL &= IsQEDStep(L - 1)
             % "   7: The step L-1 is one of the QED steps";
+
+      if (mParams.number_of_abducts > 0) {
+        cOneL &= ((StepKind(L - 1) == QEDbyEFQ()) == False())
+              % "   7a: If looking for abducts the final QED is not QEDbyEFQ";
+      }
 
       cOneL &= IsGoal(L - 1)
             % "   8: Contents(L-1) = Contents(MaxL-1)";
@@ -178,10 +183,28 @@ Expression SMT_ProvingEngine::IsAssumptionStep(unsigned s, unsigned i)
 Expression SMT_ProvingEngine::IsMPstep(unsigned s)
 {
     Expression c = False();
-    for(unsigned ax = 0; ax < mpT->mCLaxioms.size(); ax++)
-      c |= IsMPstepByAxiom(s,ax);
+    for(unsigned ax = 0; ax < mpT->mCLaxioms.size(); ax++) {
+      if (mpHints->size() > 0 || !mParams.mbInlineAxioms) {
+        c |= IsMPstepByAxiom(s,ax);
+      } else if (!GetAxiom(ax).IsSimpleFormula()) {
+         c |= IsMPstepByAxiom(s,ax);
+      } else if (s+1 < mnNumberOfAssumptions + mProofLength) {
+        c |= (IsMPstepByAxiom(s,ax) & (IsQEDStep(s+1)));
+      }
+    }
     if (mParams.mbNativeEQsub)
       c |= IsMPbyEqSub(s);
+
+    // canonization
+    /*
+    if (s + 1 < mnNumberOfAssumptions + mProofLength) {
+      c &= ((IsQEDStep(s) | IsQEDStep(s+1)) |
+            (((ContentsPredicate(s,0) != Expression("col")) |
+            ((ContentsArgument(s,0,1) >= ContentsArgument(s,0,0)) &
+             (ContentsArgument(s,0,2) >= ContentsArgument(s,0,1))))))
+           % "Canonization condition: ";
+    }*/
+
     return c;
 }
 
@@ -230,12 +253,6 @@ Expression SMT_ProvingEngine::MatchConclusion(unsigned s, unsigned ax)
           else // it is a constant
             c &= (ContentsArgument(s,1,j) == CONSTANTS[GetAxiom(ax).GetGoal().GetElement(1).GetElement(0).GetArg(j)]);
     }
-
-    // canonization
-    // c &= (ContentsPredicate(s,0) != 0u |
-    //       (ContentsArgument(s,0,1) >= ContentsArgument(s,0,0) &
-    //        ContentsArgument(s,0,2) >= ContentsArgument(s,0,1)));
-
     return c;
 }
 
@@ -750,9 +767,15 @@ void SMT_ProvingEngine::AddAbduct() {
   Expression c;
   c = (StepKind(mnNumberOfAssumptions) == Assumption())
     & (Nesting(mnNumberOfAssumptions) == 1u)
-    & (Cases(mnNumberOfAssumptions) == False())
-    & (AxiomApplied(mnNumberOfAssumptions) == Assumption());
-  mProofPremises &= c % ("Abduct" + itos(mnNumberOfAssumptions) + ":");
+    & (Cases(mnNumberOfAssumptions) == False());
+  c &= (ContentsPredicate(mnNumberOfAssumptions,0) < (unsigned)mpT->mSignature.size());
+  for (size_t i = 0; i < mnMaxArity; i++)
+    c &= (ContentsArgument(mnNumberOfAssumptions,0,i) < (unsigned)mpT->mConstants.size());
+  c &= (IsGoal(mnNumberOfAssumptions) == False()); // the goal itself cannot be abduct
+  c &= ((ContentsPredicate(mnNumberOfAssumptions,0) == Bot()) == False()); // Bot cannot be adbuct
+
+
+  mProofPremises &= c % ("Abduct " + itos(mnNumberOfAssumptions) + ":");
   mnNumberOfAssumptions++;
 }
 
@@ -809,10 +832,6 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
   for(unsigned proofStep = from; proofStep <= to; proofStep++) {
     Expression oneStep;
     oneStep = (Expression(proofStep) < ProofSize());
-//    if (hintFormula.GetGoal().GetSize() == 1)
-//      oneStep &= (Cases(proofStep) == False());
-//    else
-//      oneStep &= (Cases(proofStep) == True());
     oneStep &= (StepKind(proofStep) == MP());
     if (AxiomUsed != -1) {
       oneStep &= (AxiomApplied(proofStep) == (unsigned)AxiomUsed);
@@ -825,9 +844,6 @@ Expression SMT_ProvingEngine::EncodeHint(const tHint &hint, unsigned index) {
             oneStep &= (Instantiation(proofStep, i) == justification.GetArg(i));
         }
       }
-      // else {
-      //  oneStep &= (IsQEDStep(proofStep) == False()); /* ? */
-      // }
     }
 
     if (hintFormula.GetGoal().GetElement(0).GetElement(0).GetName() != "_") {
@@ -909,15 +925,16 @@ bool SMT_ProvingEngine::ProveFromPremises(const DNFFormula& formula, CLProof& pr
       mpT->AddSymbol(formula.GetElement(1).GetElement(0).GetName(),
                      formula.GetElement(1).GetElement(0).GetArity());
 
-    unsigned l, r, s, best = 0, best_start = 0;
+    unsigned l, r, s, step, best = 0, best_start = 0;
     l = mParams.starting_proof_length;
+    step = mParams.step;
     while (!bTimeOut && l <= mParams.max_proof_length && best == 0) {
       switch (OneProvingAttempt(formula, l)) {
         case eTimeLimitExceeded:
           bTimeOut = true;
           break;
         case eConjectureNotProved:
-          l += 12;
+          l += step;
           break;
         case eConjectureProved:
           best = l;
@@ -1327,8 +1344,27 @@ void SMT_ProvingEngine::EncodeProofToSMT(const DNFFormula &formula,
   AddComment("********************* Proof correctness constraint ******************");
   Assert(CorrectnessConstraint());
 
+
+  for(unsigned i = 0; i < mParams.number_of_abducts; i++) {
+    Expression bAbductUsed = False();
+    for(unsigned s = mnNumberOfAssumptions; s < mnNumberOfAssumptions + mProofLength; s++) {
+      Expression b = False();
+      for (unsigned ax = 0; ax < mpT->mCLaxioms.size(); ax++) {
+        for (unsigned k = 0; k < mnMaxNumberOfPremisesInAxioms; k++) {
+          b |= ((StepKind(s) == MP()) &
+               (From(s,k) == (mnNumberOfAssumptions-mParams.number_of_abducts+i)) &
+               (AxiomApplied(s) == ax) &
+               (GetAxiom(ax).GetPremises().GetSize() > k));
+        }
+      }
+      bAbductUsed |= (b & (ProofSize() > s));
+    }
+    AddComment("*************** Each abduct must be used within the proof *************");
+    Assert(bAbductUsed);
+  }
+
   if (mParams.number_of_abducts > 0) {
-    AddComment("************************ Bloking given abducts **********************");
+    AddComment("******************** Blocking abducts already found ********************");
     Assert(mBlockingAbducts);
   }
 

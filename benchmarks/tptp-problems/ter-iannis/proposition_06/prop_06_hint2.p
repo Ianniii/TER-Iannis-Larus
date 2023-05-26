@@ -13,4 +13,4 @@ fof(lemma_trichotomy1,axiom, (! [A,B,C,D] : ((~ (lt(A,B,C,D)) & ~ (lt(C,D,A,B)) 
 fof(proposition_06,conjecture,(! [A,B,C] : ((triangle(A,B,C) & congA(A,B,C,A,C,B)) => ((cong(A,B,A,C)))))).
 
 fof(hintname0, hint, col(0,2,1) | (~(col(0,2,1))), 3, _).
-fof(hintname1, hint, _, _, lemma_equalanglessymmetric(?,?,?,?,?,?)).
+fof(hintname1, hint, _, _, lemma_equalanglessymmetric(_,_,_,_,_,_)).

@@ -7,5 +7,5 @@ fof(lemma_betweennotequal,axiom, (! [A,B,C] : ((betS(A,B,C)) => ((( B != C ) & (
 fof(lemma_ray2,conjecture,(! [A,B,C] : ((out(A,B,C)) => ((( A != B )))))).
 
 
-fof(hintname0, hint, _, _ , lemma_betweennotequal(?,?,?)).
+fof(hintname0, hint, _, _ , lemma_betweennotequal(_,_,_)).
 %fof(hintname1, hint, betS(A,?,?) & betS(A,?,?), _ , _).

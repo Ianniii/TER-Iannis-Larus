@@ -7,6 +7,6 @@ fof(axiom_innertransitivity,axiom, (! [A,B,C,D] : ((betS(A,B,D) & betS(B,C,D)) =
 fof(lemma_3_6a,conjecture,(! [A,B,C,D] : ((betS(A,B,C) & betS(A,C,D)) => ((betS(B,C,D)))))).
 
 
-fof(hintname0, hint, _, _ , axiom_innertransitivity(?,?,?,?)).
+fof(hintname0, hint, _, _ , axiom_innertransitivity(_,_,_,_)).
 %fof(hintname0, hint, _, _ , axiom_betweennesssymmetry(?,?,?)).
 %fof(hintname0, hint, _, _ , lemma_betweennotequal(?,?,?)).

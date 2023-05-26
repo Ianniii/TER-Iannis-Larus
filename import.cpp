@@ -62,13 +62,14 @@ ReturnValue SetUpAxioms(proverParams &params, Theory &T, CLFormula &theorem,
   T.printAxioms();
   T.mCLOriginalAxioms = T.mCLaxioms;
 
+  /*
   if (params.number_of_abducts > 0) { // use this filtering only if filtering a la hammer is forbidden
   // ************ Filtering by reachability ************
     FilterOurNeededAxiomsByReachability(T.mCLaxioms, theorem);
     cout << "       After filtering by reachability: output size: " <<
     T.mCLaxioms.size() << endl;
     T.printAxioms();
-  }
+  }*/
 
   // ************ Filtering can be used in different stages ************
   // if this variable is set to "true", futher vampire filtering is performed.
@@ -510,34 +511,39 @@ ReturnValue ProveTheorem(proverParams &params, Theory &T, ProvingEngine &engine,
              << proof.Size() - proof.NumOfAssumptions() << ")" << endl;
       }
 
+      if (params.eEngine != eSTL_ProvingEngine)
+        proof.CL2toCL();
+
       if (params.number_of_abducts > 0) {
         cout << endl << "Using abducts: " << endl;
         cout << ExistingAbducts.size() << ". set:" << endl;
         unsigned int lastAbductSet = ExistingAbducts.size()-1;
         for(unsigned j = 0; j < params.number_of_abducts; j++) {
-          cout << "  " << j+1 << ". " << ExistingAbducts[lastAbductSet][j] << endl;
+          // cout << "  " << j+1 << ". " << ExistingAbducts[lastAbductSet][j] << endl;
+          cout << "  " << j+1 << ". " << proof.GetCLAssumption(proof.NumOfAssumptions()-params.number_of_abducts+j) << endl;
           InstantiatedPremises.push_back(ExistingAbducts[lastAbductSet][j]);
         }
-        if (SatStatus(T.mCLaxioms, InstantiatedPremises,
-                      params.msHammerInvokeForAbducts, DEFAULT_VAMPIRE_TIME_LIMIT) == eVampireUnsat) {
+        VampireReturnValue vret = SatStatus(T.mCLaxioms, InstantiatedPremises,
+                              params.msHammerInvokeForAbducts, DEFAULT_VAMPIRE_TIME_LIMIT);
+        if (vret == eVampireUnsat) {
           cout << "Abducts inconsistent!" << endl;
         }
-        else
+        else if (vret == eVampireSat) {
           cout << "Abducts CONSISTENT!" << endl;
+        }
+        else
+          cout << "Abducts unknown consistency" << endl;
         for(unsigned j = 0; j < params.number_of_abducts; j++) {
           InstantiatedPremises.pop_back();
         }
         cout << "--------------------- " << endl << endl;
       }
 
-      if (params.eEngine != eSTL_ProvingEngine)
-        proof.CL2toCL();
-
       ProofExport2LaTeX ex(fileName);
       string sFileName("proofs/PROOF" + fileName + ".tex");
       ex.ToFile(T, proof, sFileName, params);
 
-      if (params.mbCoq) {
+      if (params.mbCoq && params.number_of_abducts == 0) {
         ProofExport2Coq excoq;
         string sFileName3("proofs/PROOF" + fileName + ".v");
         excoq.ToFile(T, proof, sFileName3, params);
@@ -550,7 +556,7 @@ ReturnValue ProveTheorem(proverParams &params, Theory &T, ProvingEngine &engine,
           cout << "CoqWrong!";
         cout << endl << endl;
       }
-      if (params.mbIsa) {
+      if (params.mbIsa && params.number_of_abducts == 0) {
         ProofExport2Isabelle exisa;
         string sFileName3("proofs/PROOF" + fileName + ".thy");
         exisa.ToFile(T, proof, sFileName3, params);
@@ -568,7 +574,7 @@ ReturnValue ProveTheorem(proverParams &params, Theory &T, ProvingEngine &engine,
           cout << endl << endl;
         }
       }
-      if (params.mbMizar) {
+      if (params.mbMizar && params.number_of_abducts == 0) {
         ProofExport2Mizar exMizar;
         string sFileName3("proofs/PROOF" + fileName + ".miz");
         exMizar.ToFile(T, proof, sFileName3, params);
@@ -700,8 +706,16 @@ VampireReturnValue SatStatus(const vector<pair<CLFormula, string>>& axioms,
           return eVampireSat;
         }
       }
+      input_file.clear();
+      input_file.seekg(0);
+      while (getline(input_file, ss)) {
+        if (ss.find("Refutation") != std::string::npos) {
+          input_file.close();
+          return eVampireUnsat;
+        }
+      }
       input_file.close();
-      return eVampireUnsat;
+      return eVampireUnknown;
     }
   }
   return eVampireUnknown;

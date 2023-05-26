@@ -19,6 +19,6 @@ fof(proposition_06,conjecture,(! [A,B,C] : ((triangle(A,B,C) & congA(A,B,C,A,C,B
 fof(hintname0, hint, _, _, proposition_06a(0,1,2)).
 fof(hintname1, hint, (~(col(0,1,2))), 3, deftriangle(0,1,2)).
 fof(hintname2, hint, (~(col(0,2,1))), 4, lemma_collinearorder2(0,1,2)).
-fof(hintname3, hint, col(0,1,2), 6, lemma_collinearorder).
+fof(hintname3, hint, col(0,1,2), 6, lemma_collinearorder(_,_,_)).
 fof(hintname4, hint, _, _, proposition_06a(0,2,1)).
 fof(hintname5, hint, _, 17, lemma_trichotomy1(0,1,0,2)).
